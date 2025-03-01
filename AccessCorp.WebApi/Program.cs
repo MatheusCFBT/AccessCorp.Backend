@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using OnFunction.WebApi.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,7 +16,15 @@ builder.Services.AddDefaultIdentity<IdentityUser>()
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(s => 
+    {
+        s.SwaggerDoc("v1", new OpenApiInfo
+        {
+            Title = "AccessCorp API",
+            Description = "Esta API realiza a autenticação e ações do banco de dados",
+            Contact = new OpenApiContact() {Name = "Matheus Caldana", Email = "matheusterzini@gmail.com"}
+        });
+    });
 
 var app = builder.Build();
 
