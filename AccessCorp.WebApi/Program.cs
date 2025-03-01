@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -8,6 +9,12 @@ using OnFunction.WebApi.Data;
 using OnFunction.WebApi.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Configuration.SetBasePath(builder.Environment.ContentRootPath)
+    .AddJsonFile("appsettings.json", true, true)
+    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", true, true)
+    .AddEnvironmentVariables()
+    .AddUserSecrets(Assembly.GetExecutingAssembly(), true);
 
 builder.Services.AddDbContext<AccessCorpDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));

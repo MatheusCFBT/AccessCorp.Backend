@@ -81,51 +81,67 @@ public class AuthController : MainController
     {
          var user = await _userManager.FindByEmailAsync(email);
          var claims = await _userManager.GetClaimsAsync(user);
-         var roles = await _userManager.GetRolesAsync(user);
+
+         var identityClaims = await GetAdminClaims(claims, user);
+         var encodedToken = CodeToken(identityClaims);
+         
+         return GetTokenResponse(encodedToken, user, claims);
+    }
+
+    private async Task<ClaimsIdentity> GetAdminClaims(ICollection<Claim> claims, IdentityUser user)
+    {
+        var roles = await _userManager.GetRolesAsync(user);
         
-         // Claims para o JWT
-         claims.Add(new Claim(JwtRegisteredClaimNames.Sub, user.Id));
-         claims.Add(new Claim(JwtRegisteredClaimNames.Email, user.Email));
-         claims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
-         claims.Add(new Claim(JwtRegisteredClaimNames.Nbf, ToUnixEpochDate(DateTime.UtcNow).ToString()));
-         claims.Add(new Claim(JwtRegisteredClaimNames.Iat, ToUnixEpochDate(DateTime.UtcNow).ToString(), ClaimValueTypes.Integer64));
+        // Claims para o JWT
+        claims.Add(new Claim(JwtRegisteredClaimNames.Sub, user.Id));
+        claims.Add(new Claim(JwtRegisteredClaimNames.Email, user.Email));
+        claims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
+        claims.Add(new Claim(JwtRegisteredClaimNames.Nbf, ToUnixEpochDate(DateTime.UtcNow).ToString()));
+        claims.Add(new Claim(JwtRegisteredClaimNames.Iat, ToUnixEpochDate(DateTime.UtcNow).ToString(), ClaimValueTypes.Integer64));
 
-         foreach (var userRole in roles)
-         {
-             claims.Add(new Claim(ClaimTypes.Role, userRole));
-         }
-         
-         var identityClaims = new ClaimsIdentity();
-         identityClaims.AddClaims(claims);
-         
-         var tokenHandler = new JwtSecurityTokenHandler();
-         var tokenKey = Encoding.ASCII.GetBytes(_appSettings.Secret);
+        foreach (var userRole in roles)
+        {
+            claims.Add(new Claim(ClaimTypes.Role, userRole));
+        }
+        var identityClaims = new ClaimsIdentity();
+        identityClaims.AddClaims(claims);
+        
+        return identityClaims;
+    }
 
-         var token = tokenHandler.CreateToken(new SecurityTokenDescriptor
-         {
-             Issuer = _appSettings.Emissor,
-             Audience = _appSettings.ValidoEm,
-             Subject = identityClaims,
-             Expires = DateTime.UtcNow.AddHours(_appSettings.ExpiracaoHoras),
-             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(tokenKey),
-                 SecurityAlgorithms.HmacSha256Signature)
-         }); 
-         
-         var encodedToken = tokenHandler.WriteToken(token);
+    private string CodeToken(ClaimsIdentity identityClaims)
+    {
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var tokenKey = Encoding.ASCII.GetBytes(_appSettings.Secret);
 
-         var response = new AdministratorResponseVM
-         {
-             AccessToken = encodedToken,
-             ExpiresIn = TimeSpan.FromHours(_appSettings.ExpiracaoHoras).TotalSeconds,
-             AdministratorToken = new AdministratorToken
-             {
-                 Id = user.Id,
-                 Email = user.Email,
-                 Claims = claims.Select(c => new AdministratorClaim { Type = c.Type, Value = c.Value })
-             }
-         };
+        var token = tokenHandler.CreateToken(new SecurityTokenDescriptor
+        {
+            Issuer = _appSettings.Emissor,
+            Audience = _appSettings.ValidoEm,
+            Subject = identityClaims,
+            Expires = DateTime.UtcNow.AddHours(_appSettings.ExpiracaoHoras),
+            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(tokenKey),
+                SecurityAlgorithms.HmacSha256Signature)
+        }); 
          
-         return response;
+        var encodedToken = tokenHandler.WriteToken(token);
+        
+        return encodedToken;
+    }
+
+    private AdministratorResponseVM GetTokenResponse(string encodedToken, IdentityUser user, IEnumerable<Claim> claims)
+    {
+        return new AdministratorResponseVM
+        {
+            AccessToken = encodedToken,
+            ExpiresIn = TimeSpan.FromHours(_appSettings.ExpiracaoHoras).TotalSeconds,
+            AdministratorToken = new AdministratorToken
+            {
+                Id = user.Id,
+                Email = user.Email,
+                Claims = claims.Select(c => new AdministratorClaim { Type = c.Type, Value = c.Value })
+            }
+        };
     }
     
     private static long ToUnixEpochDate(DateTime date)
