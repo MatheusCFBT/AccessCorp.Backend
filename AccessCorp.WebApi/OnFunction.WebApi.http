@@ -1,6 +1,1 @@
 @OnFunction.WebApi_HostAddress = http://localhost:5225
-
-GET {{AccessCorp.WebApi_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
