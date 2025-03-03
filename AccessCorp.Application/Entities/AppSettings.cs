@@ -1,4 +1,4 @@
-﻿namespace OnFunction.WebApi.Extensions;
+﻿namespace OnFunction.Application.Entities;
 
 public class AppSettings
 {

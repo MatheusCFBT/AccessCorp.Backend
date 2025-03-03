@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using OnFunction.Application.Entities;
 using OnFunction.WebApi.Data;
 using OnFunction.WebApi.Extensions;
 
@@ -21,6 +22,15 @@ public static class IdentityConfig
             .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<AccessCorpDbContext>()
             .AddDefaultTokenProviders();
+        
+        builder.Services.AddAuthorization(options =>
+        {
+            options.AddPolicy("AdminPolicy", policy =>
+                policy.Requirements.Add(new PermissionRequirement("FullAccess")));
+
+            options.AddPolicy("DoormanPolicy", policy =>
+                policy.Requirements.Add(new PermissionRequirement("LimitedAccess")));
+        });
 
         builder.AddJwtConfiguration();
         

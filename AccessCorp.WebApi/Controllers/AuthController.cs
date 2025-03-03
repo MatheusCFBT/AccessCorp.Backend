@@ -1,12 +1,8 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
+﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
 using OnFunction.Application.Entities;
-using OnFunction.WebApi.Extensions;
+using OnFunction.Application.Interfaces;
 
 namespace OnFunction.WebApi.Controllers;
 
@@ -16,15 +12,18 @@ public class AuthController : MainController
     private readonly ILogger<AuthController> _logger;
     private readonly SignInManager<IdentityUser> _signInManager;
     private readonly UserManager<IdentityUser> _userManager;
-    private readonly AppSettings _appSettings;
+    private readonly IAuthService _authService;
+    private readonly IUserClaimsService _userClaimsService;
     
     public AuthController(SignInManager<IdentityUser> signInManager, 
                           UserManager<IdentityUser> userManager,
-                          IOptions<AppSettings> appSettings)
+                          IAuthService authService,
+                          IUserClaimsService userClaimsService)
     {
         _signInManager = signInManager;
         _userManager = userManager;
-        _appSettings = appSettings.Value;
+        _authService = authService;
+        _userClaimsService = userClaimsService;
     }
     
     [HttpPost("register-administrator")]
@@ -43,8 +42,9 @@ public class AuthController : MainController
 
         if (result.Succeeded)
         {
+            await _userClaimsService.AddPermissionClaimAsync(user, "FullAccess");
             await _signInManager.SignInAsync(user, false);
-            return CustomResponse(await GerarJwt(request.Email));
+            return CustomResponse(await _authService.GenerateJWTAdmin(user.Email));
         }
 
         foreach (var error in result.Errors)
@@ -59,91 +59,77 @@ public class AuthController : MainController
     public async Task<ActionResult> Login(AdministratorLoginVM request)
     {
         if (!ModelState.IsValid) return CustomResponse(ModelState);
+
+        if (await _userClaimsService.HasAdmimClaims(request.Email))
+        {
+            var result = await _signInManager.PasswordSignInAsync(request.Email, request.Senha, false, true);
+
+            if (result.Succeeded)
+            {
+                return CustomResponse(await _authService.GenerateJWTAdmin(request.Email));
+            }
+
+            if (result.IsLockedOut)
+            {
+                AddErrorProcess("Usuário temporariamente bloqueados por tentativas inválidas.");
+                return CustomResponse();
+            }
+        }
+        AddErrorProcess("Usuário ou Senha incorretos");
+        return CustomResponse(); 
+    }
+    
+    [HttpPost("register-doorman")]
+    public async Task<ActionResult> Register (DoormanRegisterVM request)
+    {
+        if (!ModelState.IsValid) return CustomResponse(ModelState);
+
+        var user = new IdentityUser
+        {
+            UserName = request.Email,
+            Email = request.Email,
+            EmailConfirmed = true
+        };
         
-        var result = await _signInManager.PasswordSignInAsync(request.Email, request.Senha, false, true);
+        var result = await _userManager.CreateAsync(user, request.Senha);
 
         if (result.Succeeded)
         {
-            return CustomResponse(await GerarJwt(request.Email));
+            await _userClaimsService.AddPermissionClaimAsync(user, "LimitedAccess");
+            await _signInManager.SignInAsync(user, false);
+            return CustomResponse(await _authService.GenerateJWTDoorman(request.Email));
         }
 
-        if (result.IsLockedOut)
+        foreach (var error in result.Errors)
         {
-            AddErrorProcess("Usuário temporariamente bloqueados por tentativas inválidas.");
-            return CustomResponse();
+            AddErrorProcess(error.Description);
+        }
+        
+        return CustomResponse();    
+    }
+    
+    [HttpPost("login-doorman")]
+    public async Task<ActionResult> Login(DoormanLoginVM request)
+    {
+        if (!ModelState.IsValid) return CustomResponse(ModelState);
+        
+        if(await _userClaimsService.HasDoormanClaims(request.Email))
+        {
+            var result = await _signInManager.PasswordSignInAsync(request.Email, request.Senha, false, true);
+
+            if (result.Succeeded)
+            {
+                return CustomResponse(await _authService.GenerateJWTDoorman(request.Email));
+            }
+
+            if (result.IsLockedOut)
+            {
+                AddErrorProcess("Usuário temporariamente bloqueados por tentativas inválidas.");
+                return CustomResponse();
+            }
         }
         
         AddErrorProcess("Usuário ou Senha incorretos");
         return CustomResponse(); 
     }
-
-    private async Task<AdministratorResponseVM> GerarJwt(string email)
-    {
-         var user = await _userManager.FindByEmailAsync(email);
-         var claims = await _userManager.GetClaimsAsync(user);
-
-         var identityClaims = await GetAdminClaims(claims, user);
-         var encodedToken = CodeToken(identityClaims);
-         
-         return GetTokenResponse(encodedToken, user, claims);
-    }
-
-    private async Task<ClaimsIdentity> GetAdminClaims(ICollection<Claim> claims, IdentityUser user)
-    {
-        var roles = await _userManager.GetRolesAsync(user);
-        
-        // Claims para o JWT
-        claims.Add(new Claim(JwtRegisteredClaimNames.Sub, user.Id));
-        claims.Add(new Claim(JwtRegisteredClaimNames.Email, user.Email));
-        claims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
-        claims.Add(new Claim(JwtRegisteredClaimNames.Nbf, ToUnixEpochDate(DateTime.UtcNow).ToString()));
-        claims.Add(new Claim(JwtRegisteredClaimNames.Iat, ToUnixEpochDate(DateTime.UtcNow).ToString(), ClaimValueTypes.Integer64));
-
-        foreach (var userRole in roles)
-        {
-            claims.Add(new Claim(ClaimTypes.Role, userRole));
-        }
-        var identityClaims = new ClaimsIdentity();
-        identityClaims.AddClaims(claims);
-        
-        return identityClaims;
-    }
-
-    private string CodeToken(ClaimsIdentity identityClaims)
-    {
-        var tokenHandler = new JwtSecurityTokenHandler();
-        var tokenKey = Encoding.ASCII.GetBytes(_appSettings.Secret);
-
-        var token = tokenHandler.CreateToken(new SecurityTokenDescriptor
-        {
-            Issuer = _appSettings.Emissor,
-            Audience = _appSettings.ValidoEm,
-            Subject = identityClaims,
-            Expires = DateTime.UtcNow.AddHours(_appSettings.ExpiracaoHoras),
-            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(tokenKey),
-                SecurityAlgorithms.HmacSha256Signature)
-        }); 
-         
-        var encodedToken = tokenHandler.WriteToken(token);
-        
-        return encodedToken;
-    }
-
-    private AdministratorResponseVM GetTokenResponse(string encodedToken, IdentityUser user, IEnumerable<Claim> claims)
-    {
-        return new AdministratorResponseVM
-        {
-            AccessToken = encodedToken,
-            ExpiresIn = TimeSpan.FromHours(_appSettings.ExpiracaoHoras).TotalSeconds,
-            AdministratorToken = new AdministratorToken
-            {
-                Id = user.Id,
-                Email = user.Email,
-                Claims = claims.Select(c => new AdministratorClaim { Type = c.Type, Value = c.Value })
-            }
-        };
-    }
-    
-    private static long ToUnixEpochDate(DateTime date)
-        => (long)Math.Round((date.ToUniversalTime() - new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero)).TotalSeconds);
-}
+   }
