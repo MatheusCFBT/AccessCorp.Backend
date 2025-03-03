@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccessCorp.WebApi", "AccessCorp.WebApi\AccessCorp.WebApi.csproj", "{DDBC96EE-FFF6-4715-BB0F-7E5E34B77F32}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccessCorp.WebApi", "AccessCorp.Identity\AccessCorp.WebApi\AccessCorp.WebApi.csproj", "{DDBC96EE-FFF6-4715-BB0F-7E5E34B77F32}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1 - WebApi", "1 - WebApi", "{9C198C3B-BFF8-4847-A9D6-FA67AA36E837}"
 EndProject
@@ -10,13 +10,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3 - Domain", "3 - Domain", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "4 - Infra", "4 - Infra", "{76260E2B-D2D9-434D-B8FA-EF3EBE51367C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccessCorp.Application", "AccessCorp.Application\AccessCorp.Application.csproj", "{F3D2ABFD-D5F2-4789-81B0-BB88CE92FD41}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccessCorp.Application", "AccessCorp.Identity\AccessCorp.Application\AccessCorp.Application.csproj", "{F3D2ABFD-D5F2-4789-81B0-BB88CE92FD41}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccessCorp.Domain", "AccessCorp.Domain\AccessCorp.Domain.csproj", "{E53976B3-4945-45A6-9472-F5BD540F8E4A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccessCorp.Domain", "AccessCorp.Identity\AccessCorp.Domain\AccessCorp.Domain.csproj", "{E53976B3-4945-45A6-9472-F5BD540F8E4A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccessCorp.Infra", "AccessCorp.Infra\AccessCorp.Infra.csproj", "{D7126C74-406F-4594-BA40-FA0F86CD7C99}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccessCorp.Infra", "AccessCorp.Identity\AccessCorp.Infra\AccessCorp.Infra.csproj", "{D7126C74-406F-4594-BA40-FA0F86CD7C99}"
 EndProject
-Global
+GlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
