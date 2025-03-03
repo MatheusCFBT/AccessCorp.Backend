@@ -7,4 +7,8 @@
         <RootNamespace>OnFunction.Application</RootNamespace>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\AccessCorp.Infra\AccessCorp.Infra.csproj" />
+    </ItemGroup>
+
 </Project>
