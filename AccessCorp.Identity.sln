@@ -16,8 +16,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccessCorp.Domain", "Access
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccessCorp.Infra", "AccessCorp.Infra\AccessCorp.Infra.csproj", "{D7126C74-406F-4594-BA40-FA0F86CD7C99}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AccessCorp.Users", "AccessCorp.Users", "{00A305DC-4D1A-4CBF-939E-2DECCBA638D5}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
