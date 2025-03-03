@@ -30,7 +30,7 @@ public abstract class MainController : Controller
 
     protected bool ValidOperation()
     {
-        return Errors.Any();
+        return !Errors.Any();
     }
 
     protected void AddErrorProcess(string error)
