@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace OnFunction.WebApi.Extensions;
+namespace AccessCorp.WebApi.Extensions;
 
 public class IdentityPortugueseMessages : IdentityErrorDescriber
 { 

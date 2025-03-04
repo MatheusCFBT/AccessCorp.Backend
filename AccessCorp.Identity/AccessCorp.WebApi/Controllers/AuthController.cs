@@ -1,10 +1,9 @@
-﻿using System.Security.Claims;
+﻿using AccessCorp.Application.Entities;
+using AccessCorp.Application.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using OnFunction.Application.Entities;
-using OnFunction.Application.Interfaces;
 
-namespace OnFunction.WebApi.Controllers;
+namespace AccessCorp.WebApi.Controllers;
 
 [Route("identity")]
 public class AuthController : MainController

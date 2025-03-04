@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace OnFunction.WebApi.Controllers;
+namespace AccessCorp.WebApi.Controllers;
 
 [ApiController]
 public abstract class MainController : Controller

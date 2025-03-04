@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace OnFunction.WebApi.Data;
+namespace AccessCorp.WebApi.Data;
 
 public class AccessCorpDbContext : IdentityDbContext
 {

@@ -1,6 +1,6 @@
-﻿using OnFunction.Application.Entities;
+﻿using AccessCorp.Application.Entities;
 
-namespace OnFunction.Application.Interfaces;
+namespace AccessCorp.Application.Interfaces;
 
 public interface IAuthService
 {

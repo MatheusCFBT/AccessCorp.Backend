@@ -1,4 +1,4 @@
-﻿namespace OnFunction.Application.Entities;
+﻿namespace AccessCorp.Application.Entities;
 
 public class AppSettings
 {

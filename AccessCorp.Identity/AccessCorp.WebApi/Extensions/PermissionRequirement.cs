@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 
-namespace OnFunction.WebApi.Extensions;
+namespace AccessCorp.WebApi.Extensions;
 
 
 public class PermissionRequirement : IAuthorizationRequirement

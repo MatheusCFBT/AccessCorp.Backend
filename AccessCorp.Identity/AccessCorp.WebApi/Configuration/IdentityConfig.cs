@@ -1,13 +1,13 @@
 ﻿using System.Text;
+using AccessCorp.Application.Entities;
+using AccessCorp.WebApi.Data;
+using AccessCorp.WebApi.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using OnFunction.Application.Entities;
-using OnFunction.WebApi.Data;
-using OnFunction.WebApi.Extensions;
 
-namespace OnFunction.WebApi.Configuration;
+namespace AccessCorp.WebApi.Configuration;
 
 public static class IdentityConfig
 {

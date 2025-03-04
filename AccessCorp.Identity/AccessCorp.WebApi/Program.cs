@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
-using OnFunction.Application.Interfaces;
-using OnFunction.Application.Services;
-using OnFunction.WebApi.Configuration;
-using OnFunction.WebApi.Extensions;
+using AccessCorp.Application.Interfaces;
+using AccessCorp.Application.Services;
+using AccessCorp.WebApi.Configuration;
+using AccessCorp.WebApi.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 

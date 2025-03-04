@@ -1,7 +1,6 @@
-﻿using System.Security.Claims;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 
-namespace OnFunction.Application.Interfaces;
+namespace AccessCorp.Application.Interfaces;
 
 public interface IUserClaimsService
 {

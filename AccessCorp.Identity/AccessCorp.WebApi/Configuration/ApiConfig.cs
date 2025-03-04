@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace OnFunction.WebApi.Configuration;
+namespace AccessCorp.WebApi.Configuration;
 
 public static class ApiConfig
 {

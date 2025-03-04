@@ -1,13 +1,14 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using AccessCorp.Application.Entities;
+using AccessCorp.Application.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using OnFunction.Application.Entities;
-using OnFunction.Application.Interfaces;
 
-namespace OnFunction.Application.Services;
+
+namespace AccessCorp.Application.Services;
 
 public class AuthService : IAuthService
 {
