@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Text;
 using AccessCorp.Application.Entities;
 using AccessCorp.Application.Interfaces;
+using AccessCorp.Domain.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -15,14 +16,17 @@ public class AuthService : IAuthService
     private readonly SignInManager<IdentityUser> _signInManager;
     private readonly UserManager<IdentityUser> _userManager;
     private readonly AppSettings _appSettings;
+    private readonly ICepValidationService _cepValidationService;
     
     public AuthService(SignInManager<IdentityUser> signInManager, 
                        UserManager<IdentityUser> userManager,
-                       IOptions<AppSettings> appSettings)
+                       IOptions<AppSettings> appSettings,
+                       ICepValidationService cepValidationService)
     {
         _signInManager = signInManager;
         _userManager = userManager;
         _appSettings = appSettings.Value;
+        _cepValidationService = cepValidationService;
     }
     
     public async Task<AdministratorResponseVM> GenerateJWTAdmin(string email)
@@ -102,7 +106,14 @@ public class AuthService : IAuthService
          
         return GetTokenDoormanResponse(encodedToken, user, claims);    
     }
-    
+
+    public async Task<bool> ValidateCep(string cep)
+    {
+        if (!_cepValidationService.CepIsValid(cep)) return false;
+
+        return true;
+    }
+
     private async Task<ClaimsIdentity> GetDoormanClaims(ICollection<Claim> claims, IdentityUser user)
     {
         var roles = await _userManager.GetRolesAsync(user);
@@ -138,6 +149,8 @@ public class AuthService : IAuthService
             }
         };
     }
+    
+    
     
     private static long ToUnixEpochDate(DateTime date)
         => (long)Math.Round((date.ToUniversalTime() - new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero)).TotalSeconds);
