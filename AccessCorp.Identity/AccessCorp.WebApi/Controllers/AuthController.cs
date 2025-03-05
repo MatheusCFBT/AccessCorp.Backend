@@ -26,7 +26,7 @@ public class AuthController : MainController
     }
     
     [HttpPost("register-administrator")]
-    public async Task<ActionResult> Register (AdministratorRegisterVM request)
+    public async Task<ActionResult> Register ([FromBody] AdministratorRegisterVM request)
     {
         if (!ModelState.IsValid) return CustomResponse(ModelState);
 
@@ -55,9 +55,15 @@ public class AuthController : MainController
     }
     
     [HttpPost("login-administrator")]
-    public async Task<ActionResult> Login(AdministratorLoginVM request)
+    public async Task<ActionResult> Login([FromBody] AdministratorLoginVM request)
     {
         if (!ModelState.IsValid) return CustomResponse(ModelState);
+
+        if (!await _authService.ValidateCep(request.Cep))
+        {
+            AddErrorProcess("Cep inválido,tente novamente.");
+            return CustomResponse();
+        }
 
         if (await _userClaimsService.HasAdmimClaims(request.Email))
         {
@@ -78,39 +84,16 @@ public class AuthController : MainController
         return CustomResponse(); 
     }
     
-    [HttpPost("register-doorman")]
-    public async Task<ActionResult> Register (DoormanRegisterVM request)
-    {
-        if (!ModelState.IsValid) return CustomResponse(ModelState);
-
-        var user = new IdentityUser
-        {
-            UserName = request.Email,
-            Email = request.Email,
-            EmailConfirmed = true
-        };
-        
-        var result = await _userManager.CreateAsync(user, request.Senha);
-
-        if (result.Succeeded)
-        {
-            await _userClaimsService.AddPermissionClaimAsync(user, "LimitedAccess");
-            await _signInManager.SignInAsync(user, false);
-            return CustomResponse(await _authService.GenerateJWTDoorman(request.Email));
-        }
-
-        foreach (var error in result.Errors)
-        {
-            AddErrorProcess(error.Description);
-        }
-        
-        return CustomResponse();    
-    }
-    
     [HttpPost("login-doorman")]
-    public async Task<ActionResult> Login(DoormanLoginVM request)
+    public async Task<ActionResult> Login([FromBody] DoormanLoginVM request)
     {
         if (!ModelState.IsValid) return CustomResponse(ModelState);
+        
+        if (!await _authService.ValidateCep(request.Cep))
+        {
+            AddErrorProcess("Cep inválido,tente novamente.");
+            return CustomResponse();
+        }
         
         if(await _userClaimsService.HasDoormanClaims(request.Email))
         {
