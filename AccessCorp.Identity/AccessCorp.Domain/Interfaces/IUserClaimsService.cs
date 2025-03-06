@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace AccessCorp.Application.Interfaces;
+namespace AccessCorp.Domain.Interfaces;
 
 public interface IUserClaimsService
 {

@@ -1,8 +1,8 @@
 ﻿using System.Security.Claims;
-using AccessCorp.Application.Interfaces;
+using AccessCorp.Domain.Interfaces;
 using Microsoft.AspNetCore.Identity;
 
-namespace AccessCorp.Application.Services;
+namespace AccessCorp.Domain.Services;
 
 public class UserClaimsService : IUserClaimsService
 {

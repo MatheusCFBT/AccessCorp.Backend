@@ -1,6 +1,5 @@
 ﻿using AccessCorp.Application.Entities;
 using AccessCorp.Application.Interfaces;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AccessCorp.WebApi.Controllers;
@@ -9,109 +8,68 @@ namespace AccessCorp.WebApi.Controllers;
 public class AuthController : MainController
 {
     private readonly ILogger<AuthController> _logger;
-    private readonly SignInManager<IdentityUser> _signInManager;
-    private readonly UserManager<IdentityUser> _userManager;
     private readonly IAuthService _authService;
-    private readonly IUserClaimsService _userClaimsService;
     
-    public AuthController(SignInManager<IdentityUser> signInManager, 
-                          UserManager<IdentityUser> userManager,
-                          IAuthService authService,
-                          IUserClaimsService userClaimsService)
+    public AuthController(IAuthService authService)
     {
-        _signInManager = signInManager;
-        _userManager = userManager;
         _authService = authService;
-        _userClaimsService = userClaimsService;
     }
     
     [HttpPost("register-administrator")]
+    [ProducesResponseType<ActionResult>(400)]
+    [ProducesResponseType<ActionResult>(200)]
     public async Task<ActionResult> Register ([FromBody] AdministratorRegisterVM request)
     {
         if (!ModelState.IsValid) return CustomResponse(ModelState);
-
-        var user = new IdentityUser
-        {
-            UserName = request.Email,
-            Email = request.Email,
-            EmailConfirmed = true
-        };
+    
+        var result = await _authService.RegisterAdministrator(request);
         
-        var result = await _userManager.CreateAsync(user, request.Senha);
-
-        if (result.Succeeded)
-        {
-            await _userClaimsService.AddPermissionClaimAsync(user, "FullAccess");
-            await _signInManager.SignInAsync(user, false);
-            return CustomResponse(await _authService.GenerateJWTAdmin(user.Email));
-        }
-
+        if (result.Success) return CustomResponse(result);
+        
         foreach (var error in result.Errors)
         {
-            AddErrorProcess(error.Description);
+            AddErrorProcess(error);
         }
-        
-        return CustomResponse();    
+            
+        return CustomResponse();
     }
     
     [HttpPost("login-administrator")]
+    [ProducesResponseType<ActionResult>(400)]
+    [ProducesResponseType<ActionResult>(200)]
     public async Task<ActionResult> Login([FromBody] AdministratorLoginVM request)
     {
         if (!ModelState.IsValid) return CustomResponse(ModelState);
+        
+        var result = await _authService.LoginAdministrator(request);
 
-        if (!await _authService.ValidateCep(request.Cep))
+        if (result.Success) return CustomResponse(result);
+        
+        foreach (var error in result.Errors)
         {
-            AddErrorProcess("Cep inválido,tente novamente.");
-            return CustomResponse();
+            AddErrorProcess(error);
         }
+            
+        return CustomResponse();
 
-        if (await _userClaimsService.HasAdmimClaims(request.Email))
-        {
-            var result = await _signInManager.PasswordSignInAsync(request.Email, request.Senha, false, true);
-
-            if (result.Succeeded)
-            {
-                return CustomResponse(await _authService.GenerateJWTAdmin(request.Email));
-            }
-
-            if (result.IsLockedOut)
-            {
-                AddErrorProcess("Usuário temporariamente bloqueados por tentativas inválidas.");
-                return CustomResponse();
-            }
-        }
-        AddErrorProcess("Usuário ou Senha incorretos");
-        return CustomResponse(); 
     }
     
     [HttpPost("login-doorman")]
+    [ProducesResponseType<ActionResult>(400)]
+    [ProducesResponseType<ActionResult>(200)]
     public async Task<ActionResult> Login([FromBody] DoormanLoginVM request)
     {
         if (!ModelState.IsValid) return CustomResponse(ModelState);
         
-        if (!await _authService.ValidateCep(request.Cep))
-        {
-            AddErrorProcess("Cep inválido,tente novamente.");
-            return CustomResponse();
-        }
-        
-        if(await _userClaimsService.HasDoormanClaims(request.Email))
-        {
-            var result = await _signInManager.PasswordSignInAsync(request.Email, request.Senha, false, true);
+        var result = await _authService.LoginDoorman(request);
 
-            if (result.Succeeded)
-            {
-                return CustomResponse(await _authService.GenerateJWTDoorman(request.Email));
-            }
-
-            if (result.IsLockedOut)
-            {
-                AddErrorProcess("Usuário temporariamente bloqueados por tentativas inválidas.");
-                return CustomResponse();
-            }
-        }
+        if (result.Success) return CustomResponse(result);
         
-        AddErrorProcess("Usuário ou Senha incorretos");
-        return CustomResponse(); 
+        foreach (var error in result.Errors)
+        {
+            AddErrorProcess(error);
+        }
+            
+        return CustomResponse();
     }
    }
