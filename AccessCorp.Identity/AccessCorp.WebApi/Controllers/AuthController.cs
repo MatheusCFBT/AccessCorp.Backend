@@ -1,5 +1,6 @@
 ﻿using AccessCorp.Application.Entities;
 using AccessCorp.Application.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AccessCorp.WebApi.Controllers;
@@ -8,11 +9,23 @@ namespace AccessCorp.WebApi.Controllers;
 public class AuthController : MainController
 {
     private readonly ILogger<AuthController> _logger;
+    private readonly SignInManager<IdentityUser> _signInManager;
+    private readonly UserManager<IdentityUser> _userManager;
     private readonly IAuthService _authService;
+    private readonly IUserClaimsService _userClaimsService;
+    private readonly ISendEmailService _sendEmailService;
     
-    public AuthController(IAuthService authService)
+    public AuthController(SignInManager<IdentityUser> signInManager, 
+                          UserManager<IdentityUser> userManager,
+                          IAuthService authService,
+                          IUserClaimsService userClaimsService,
+                          ISendEmailService sendEmailService)
     {
+        _signInManager = signInManager;
+        _userManager = userManager;
         _authService = authService;
+        _userClaimsService = userClaimsService;
+        _sendEmailService = sendEmailService;
     }
     
     [HttpPost("register-administrator")]

@@ -12,6 +12,13 @@
     </ItemGroup>
 
     <ItemGroup>
+<<<<<<< HEAD
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.10" />
+=======
+        <PackageReference Include="MailKit" Version="4.10.0" />
+>>>>>>> 029a04f (Add and refactor Admin actions)
+        <ProjectReference Include="..\AccessCorp.Domain\AccessCorp.Domain.csproj" />
+        <PackageReference Include="MailKit" Version="4.10.0" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.10" />
         <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.10" />
     </ItemGroup>
