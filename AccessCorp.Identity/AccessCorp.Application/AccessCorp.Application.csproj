@@ -8,10 +8,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\AccessCorp.Infra\AccessCorp.Infra.csproj" />
+        <ProjectReference Include="..\AccessCorp.Domain\AccessCorp.Domain.csproj" />
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.10" />
         <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.10" />
     </ItemGroup>
 

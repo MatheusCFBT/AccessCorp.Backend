@@ -1,9 +1,9 @@
 ﻿using System.Text;
 using AccessCorp.Application.Entities;
-using AccessCorp.WebApi.Data;
 using AccessCorp.WebApi.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using AccessCorp.WebApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 

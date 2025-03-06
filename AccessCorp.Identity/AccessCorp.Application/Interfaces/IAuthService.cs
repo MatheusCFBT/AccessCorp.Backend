@@ -1,10 +1,12 @@
 ﻿using AccessCorp.Application.Entities;
+using Microsoft.AspNetCore.Mvc;
 
 namespace AccessCorp.Application.Interfaces;
 
 public interface IAuthService
 {
-    public Task<AdministratorResponseVM> GenerateJWTAdmin(string email);
-    public Task<DoormanResponseVM> GenerateJWTDoorman(string email);
-    public Task<bool> ValidateCep(string cep);
+    Task<Result> LoginAdministrator(AdministratorLoginVM request);
+    Task<Result> RegisterAdministrator(AdministratorRegisterVM request);
+    Task<Result> LoginDoorman(DoormanLoginVM request);
+
 }

@@ -4,7 +4,10 @@ using System.Text;
 using AccessCorp.Application.Entities;
 using AccessCorp.Application.Interfaces;
 using AccessCorp.Domain.Interfaces;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
@@ -17,142 +20,93 @@ public class AuthService : IAuthService
     private readonly UserManager<IdentityUser> _userManager;
     private readonly AppSettings _appSettings;
     private readonly ICepValidationService _cepValidationService;
+    private readonly IJwtService _jwtService;
+    private readonly IUserClaimsService _userClaimsService;
     
     public AuthService(SignInManager<IdentityUser> signInManager, 
                        UserManager<IdentityUser> userManager,
                        IOptions<AppSettings> appSettings,
-                       ICepValidationService cepValidationService)
+                       ICepValidationService cepValidationService,
+                       IJwtService jwtService,
+                       IUserClaimsService userClaimsService)
     {
         _signInManager = signInManager;
         _userManager = userManager;
         _appSettings = appSettings.Value;
         _cepValidationService = cepValidationService;
-    }
-    
-    public async Task<AdministratorResponseVM> GenerateJWTAdmin(string email)
-    {
-        var user = await _userManager.FindByEmailAsync(email);
-        var claims = await _userManager.GetClaimsAsync(user);
-
-        var identityClaims = await GetAdminClaims(claims, user);
-        var encodedToken = CodeToken(identityClaims);
-         
-        return GetTokenAdminResponse(encodedToken, user, claims);
+        _jwtService = jwtService;
+        _userClaimsService = userClaimsService;
     }
 
-    private async Task<ClaimsIdentity> GetAdminClaims(ICollection<Claim> claims, IdentityUser user)
+    public async Task<Result> LoginAdministrator(AdministratorLoginVM request)
     {
-        var roles = await _userManager.GetRolesAsync(user);
-        
-        // Claims para o JWT
-        claims.Add(new Claim(JwtRegisteredClaimNames.Sub, user.Id));
-        claims.Add(new Claim(JwtRegisteredClaimNames.Email, user.Email));
-        claims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
-        claims.Add(new Claim(JwtRegisteredClaimNames.Nbf, ToUnixEpochDate(DateTime.UtcNow).ToString()));
-        claims.Add(new Claim(JwtRegisteredClaimNames.Iat, ToUnixEpochDate(DateTime.UtcNow).ToString(), ClaimValueTypes.Integer64));
+        if (!ValidateCep(request.Cep))
+            return Result.Fail("Invalid Cep");
 
-        foreach (var userRole in roles)
+        if (await _userClaimsService.HasAdmimClaims(request.Email))
         {
-            claims.Add(new Claim(ClaimTypes.Role, userRole));
+            var result = await _signInManager.PasswordSignInAsync(request.Email, request.Senha, false, true);
+
+            if (result.Succeeded)
+                return Result.Ok(await _jwtService.GenerateJWTAdmin(request.Email));
+
+            if (result.IsLockedOut)
+                return Result.Fail("Usuário temporariamente bloqueados por tentativas inválidas.");
         }
-        var identityClaims = new ClaimsIdentity();
-        identityClaims.AddClaims(claims);
-        
-        return identityClaims;
-    }
-    
-    private string CodeToken(ClaimsIdentity identityClaims)
-    {
-        var tokenHandler = new JwtSecurityTokenHandler();
-        var tokenKey = Encoding.ASCII.GetBytes(_appSettings.Secret);
 
-        var token = tokenHandler.CreateToken(new SecurityTokenDescriptor
-        {
-            Issuer = _appSettings.Emissor,
-            Audience = _appSettings.ValidoEm,
-            Subject = identityClaims,
-            Expires = DateTime.UtcNow.AddHours(_appSettings.ExpiracaoHoras),
-            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(tokenKey),
-                SecurityAlgorithms.HmacSha256Signature)
-        }); 
-         
-        var encodedToken = tokenHandler.WriteToken(token);
-        
-        return encodedToken;
+        return Result.Fail("Usuário ou Senha incorretos");
     }
-    
-    private AdministratorResponseVM GetTokenAdminResponse(string encodedToken, IdentityUser user, IEnumerable<Claim> claims)
+
+    public async Task<Result> RegisterAdministrator(AdministratorRegisterVM request)
     {
-        return new AdministratorResponseVM
+        if (!ValidateCep(request.Cep))
+            return Result.Fail("Invalid Cep");
+        
+        var user = new IdentityUser
         {
-            AccessToken = encodedToken,
-            ExpiresIn = TimeSpan.FromHours(_appSettings.ExpiracaoHoras).TotalSeconds,
-            AdministratorToken = new AdministratorToken
-            {
-                Id = user.Id,
-                Email = user.Email,
-                Claims = claims.Select(c => new AdministratorClaim { Type = c.Type, Value = c.Value })
-            }
+            UserName = request.Email,
+            Email = request.Email,
+            EmailConfirmed = true
         };
-    }
+        
+        var result = await _userManager.CreateAsync(user, request.Senha);
     
-    public async Task<DoormanResponseVM> GenerateJWTDoorman(string email)
-    {
-        var user = await _userManager.FindByEmailAsync(email);
-        var claims = await _userManager.GetClaimsAsync(user);
-
-        var identityClaims = await GetDoormanClaims(claims, user);
-        var encodedToken = CodeToken(identityClaims);
-         
-        return GetTokenDoormanResponse(encodedToken, user, claims);    
+        if (!result.Succeeded)
+        {
+            var errors = result.Errors.Select(e => e.Description).ToList();
+            return Result.Fail(errors);
+        }
+        
+        await _userClaimsService.AddPermissionClaimAsync(user, "FullAccess");
+        await _signInManager.SignInAsync(user, false);
+        
+        return Result.Ok(await _jwtService.GenerateJWTAdmin(user.Email));
     }
 
-    public async Task<bool> ValidateCep(string cep)
+    public async Task<Result> LoginDoorman(DoormanLoginVM request)
+    {
+        if (!ValidateCep(request.Cep))
+            return Result.Fail("Invalid Cep");
+        
+        if(await _userClaimsService.HasDoormanClaims(request.Email))
+        {
+            var result = await _signInManager.PasswordSignInAsync(request.Email, request.Senha, false, true);
+    
+            if (result.Succeeded)
+                return Result.Ok(await _jwtService.GenerateJWTDoorman(request.Email));
+            
+            if (result.IsLockedOut)
+                return Result.Fail("Usuário temporariamente bloqueados por tentativas inválidas.");
+        }
+        
+        return Result.Fail("Usuário ou Senha incorretos"); 
+    }
+
+
+    private bool ValidateCep(string cep)
     {
         if (!_cepValidationService.CepIsValid(cep)) return false;
 
         return true;
     }
-
-    private async Task<ClaimsIdentity> GetDoormanClaims(ICollection<Claim> claims, IdentityUser user)
-    {
-        var roles = await _userManager.GetRolesAsync(user);
-        
-        // Claims para o JWT
-        claims.Add(new Claim(JwtRegisteredClaimNames.Sub, user.Id));
-        claims.Add(new Claim(JwtRegisteredClaimNames.Email, user.Email));
-        claims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
-        claims.Add(new Claim(JwtRegisteredClaimNames.Nbf, ToUnixEpochDate(DateTime.UtcNow).ToString()));
-        claims.Add(new Claim(JwtRegisteredClaimNames.Iat, ToUnixEpochDate(DateTime.UtcNow).ToString(), ClaimValueTypes.Integer64));
-
-        foreach (var userRole in roles)
-        {
-            claims.Add(new Claim(ClaimTypes.Role, userRole));
-        }
-        var identityClaims = new ClaimsIdentity();
-        identityClaims.AddClaims(claims);
-        
-        return identityClaims;
-    }
-    
-    private DoormanResponseVM GetTokenDoormanResponse(string encodedToken, IdentityUser user, IEnumerable<Claim> claims)
-    {
-        return new DoormanResponseVM
-        {
-            AccessToken = encodedToken,
-            ExpiresIn = TimeSpan.FromHours(_appSettings.ExpiracaoHoras).TotalSeconds,
-            DoormanToken = new DoormanToken()
-            {
-                Id = user.Id,
-                Email = user.Email,
-                Claims = claims.Select(c => new DoormanClaim() { Type = c.Type, Value = c.Value })
-            }
-        };
-    }
-    
-    
-    
-    private static long ToUnixEpochDate(DateTime date)
-        => (long)Math.Round((date.ToUniversalTime() - new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero)).TotalSeconds);
-
 }
