@@ -1,6 +1,5 @@
 ﻿using AccessCorp.Application.Entities;
 using AccessCorp.Application.Interfaces;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AccessCorp.WebApi.Controllers;
@@ -13,25 +12,6 @@ public class AuthController : MainController
     public AuthController(IAuthService authService)
     {
         _authService = authService;
-    }
-    
-    [HttpPost("register-administrator")]
-    [ProducesResponseType<ActionResult>(400)]
-    [ProducesResponseType<ActionResult>(200)]
-    public async Task<ActionResult> Register ([FromBody] AdministratorRegisterVM request)
-    {
-        if (!ModelState.IsValid) return CustomResponse(ModelState);
-    
-        var result = await _authService.RegisterAdministrator(request);
-        
-        if (result.Success) return CustomResponse(result);
-        
-        foreach (var error in result.Errors)
-        {
-            AddErrorProcess(error);
-        }
-            
-        return CustomResponse();
     }
     
     [HttpPost("login-administrator")]

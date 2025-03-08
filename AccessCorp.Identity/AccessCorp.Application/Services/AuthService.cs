@@ -18,7 +18,6 @@ public class AuthService : IAuthService
 {
     private readonly SignInManager<IdentityUser> _signInManager;
     private readonly UserManager<IdentityUser> _userManager;
-    private readonly AppSettings _appSettings;
     private readonly ICepValidationService _cepValidationService;
     private readonly IJwtService _jwtService;
     private readonly IUserClaimsService _userClaimsService;
@@ -26,7 +25,6 @@ public class AuthService : IAuthService
     
     public AuthService(SignInManager<IdentityUser> signInManager, 
                        UserManager<IdentityUser> userManager,
-                       IOptions<AppSettings> appSettings,
                        ICepValidationService cepValidationService,
                        IJwtService jwtService,
                        IUserClaimsService userClaimsService,
@@ -34,7 +32,6 @@ public class AuthService : IAuthService
     {
         _signInManager = signInManager;
         _userManager = userManager;
-        _appSettings = appSettings.Value;
         _cepValidationService = cepValidationService;
         _jwtService = jwtService;
         _userClaimsService = userClaimsService;
