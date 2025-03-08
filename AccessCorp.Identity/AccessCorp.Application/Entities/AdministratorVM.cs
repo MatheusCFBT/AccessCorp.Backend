@@ -16,8 +16,15 @@ public class AdministratorRegisterVM
     [StringLength(100, MinimumLength = 6, ErrorMessage = "O campo {0} precisa ter entre {2} e {1} caracteres")]
     public string Password { get; set; }
     
-    [Compare("Senha", ErrorMessage = "As senhas não conferem")]
+    [Compare("Password", ErrorMessage = "As senhas não conferem")]
     public string PasswordConfirmed { get; set; }
+}
+
+public class AdministratorFirstAccessVM
+{
+    [Required(ErrorMessage = "O campo {0} é obrigatório ")]
+    [EmailAddress(ErrorMessage = "O campo {0} está em formato inválido")]
+    public string Email { get; set; }
 }
 
 public class AdministratorResetPasswordVM
@@ -37,9 +44,10 @@ public class AdministratorResetPasswordVM
     [StringLength(100, MinimumLength = 6, ErrorMessage = "O campo {0} precisa ter entre {2} e {1} caracteres")]
     public string Password { get; set; }
     
-    [Compare("Senha", ErrorMessage = "As senhas não conferem")]
+    [Compare("Password", ErrorMessage = "As senhas não conferem")]
     public string PasswordConfirmed { get; set; }
 }
+
 public class AdministratorLoginVM
 {
     [Required(ErrorMessage = "O campo {0} é obrigatório ")]

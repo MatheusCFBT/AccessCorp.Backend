@@ -2,5 +2,5 @@
 
 public interface ISendEmailService
 {
-    public void SendEmail(string toEmail, string token);
+    public Task<bool> SendEmail(string toEmail, string token);
 }

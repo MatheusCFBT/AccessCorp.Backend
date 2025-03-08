@@ -8,24 +8,11 @@ namespace AccessCorp.WebApi.Controllers;
 [Route("identity")]
 public class AuthController : MainController
 {
-    private readonly ILogger<AuthController> _logger;
-    private readonly SignInManager<IdentityUser> _signInManager;
-    private readonly UserManager<IdentityUser> _userManager;
     private readonly IAuthService _authService;
-    private readonly IUserClaimsService _userClaimsService;
-    private readonly ISendEmailService _sendEmailService;
     
-    public AuthController(SignInManager<IdentityUser> signInManager, 
-                          UserManager<IdentityUser> userManager,
-                          IAuthService authService,
-                          IUserClaimsService userClaimsService,
-                          ISendEmailService sendEmailService)
+    public AuthController(IAuthService authService)
     {
-        _signInManager = signInManager;
-        _userManager = userManager;
         _authService = authService;
-        _userClaimsService = userClaimsService;
-        _sendEmailService = sendEmailService;
     }
     
     [HttpPost("register-administrator")]
@@ -64,7 +51,44 @@ public class AuthController : MainController
         }
             
         return CustomResponse();
+    }
+    
+    [HttpPost("first-access-administrator")]
+    [ProducesResponseType<ActionResult>(400)]
+    [ProducesResponseType<ActionResult>(200)]
+    public async Task<ActionResult> FirsAccessAdministrator([FromBody] AdministratorFirstAccessVM request)
+    {
+        if (!ModelState.IsValid) return CustomResponse(ModelState);
+        
+        var result = await _authService.FirsAccessAdministrator(request);
+      
+        if (result.Success) return CustomResponse(result);
+        
+        foreach (var error in result.Errors)
+        {
+            AddErrorProcess(error);
+        }
+            
+        return CustomResponse();
+    }
 
+    [HttpPost("reset-password-administrator")]
+    [ProducesResponseType<ActionResult>(400)]
+    [ProducesResponseType<ActionResult>(200)]
+    public async Task<ActionResult> ResetPasswordAdministrator([FromBody] AdministratorResetPasswordVM request)
+    {
+        if (!ModelState.IsValid) return CustomResponse(ModelState);
+        
+        var result = await _authService.ResetPasswordAdministrator(request);
+      
+        if (result.Success) return CustomResponse(result);
+        
+        foreach (var error in result.Errors)
+        {
+            AddErrorProcess(error);
+        }
+            
+        return CustomResponse();
     }
     
     [HttpPost("login-doorman")]
