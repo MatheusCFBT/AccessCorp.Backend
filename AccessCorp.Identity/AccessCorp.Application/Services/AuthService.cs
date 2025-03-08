@@ -22,13 +22,15 @@ public class AuthService : IAuthService
     private readonly ICepValidationService _cepValidationService;
     private readonly IJwtService _jwtService;
     private readonly IUserClaimsService _userClaimsService;
+    private readonly ISendEmailService _sendEmailService;
     
     public AuthService(SignInManager<IdentityUser> signInManager, 
                        UserManager<IdentityUser> userManager,
                        IOptions<AppSettings> appSettings,
                        ICepValidationService cepValidationService,
                        IJwtService jwtService,
-                       IUserClaimsService userClaimsService)
+                       IUserClaimsService userClaimsService,
+                       ISendEmailService sendEmailService)
     {
         _signInManager = signInManager;
         _userManager = userManager;
@@ -36,6 +38,7 @@ public class AuthService : IAuthService
         _cepValidationService = cepValidationService;
         _jwtService = jwtService;
         _userClaimsService = userClaimsService;
+        _sendEmailService = sendEmailService;
     }
 
     public async Task<Result> LoginAdministrator(AdministratorLoginVM request)
@@ -43,18 +46,14 @@ public class AuthService : IAuthService
         if (!ValidateCep(request.Cep))
             return Result.Fail("Invalid Cep");
 
-        if (await _userClaimsService.HasAdmimClaims(request.Email))
-        {
-            var result = await _signInManager.PasswordSignInAsync(request.Email, request.Senha, false, true);
+        if (!await _userClaimsService.HasAdmimClaims(request.Email)) return Result.Fail("Usuário ou Senha incorretos");
+       
+        var result = await _signInManager.PasswordSignInAsync(request.Email, request.Password, false, true);
 
-            if (result.Succeeded)
-                return Result.Ok(await _jwtService.GenerateJWTAdmin(request.Email));
+        if (result.Succeeded)
+            return Result.Ok(await _jwtService.GenerateJWTAdmin(request.Email));
 
-            if (result.IsLockedOut)
-                return Result.Fail("Usuário temporariamente bloqueados por tentativas inválidas.");
-        }
-
-        return Result.Fail("Usuário ou Senha incorretos");
+        return Result.Fail(result.IsLockedOut ? "Usuário temporariamente bloqueados por tentativas inválidas." : "Usuário ou Senha incorretos");
     }
 
     public async Task<Result> RegisterAdministrator(AdministratorRegisterVM request)
@@ -69,7 +68,7 @@ public class AuthService : IAuthService
             EmailConfirmed = true
         };
         
-        var result = await _userManager.CreateAsync(user, request.Senha);
+        var result = await _userManager.CreateAsync(user, request.Password);
     
         if (!result.Succeeded)
         {
@@ -83,23 +82,55 @@ public class AuthService : IAuthService
         return Result.Ok(await _jwtService.GenerateJWTAdmin(user.Email));
     }
 
-    public async Task<Result> LoginDoorman(DoormanLoginVM request)
+    public async Task<Result> FirsAccessAdministrator(AdministratorFirstAccessVM request)
+    {
+        var user = await _userManager.FindByEmailAsync(request.Email);
+        
+        if (user == null) return Result.Fail("Usuario incorreto");
+
+        if (!await _userClaimsService.HasAdmimClaims(request.Email))
+            return Result.Fail("Usuário incorreto");
+
+        var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+        
+        var result = _sendEmailService.SendEmail(request.Email, token);
+
+        if (!await result)
+        {
+            return Result.Fail("Houve um erro");
+        }
+        
+        return Result.Ok("E-mail enviado.");
+    }
+
+    public async Task<Result> ResetPasswordAdministrator(AdministratorResetPasswordVM request)
     {
         if (!ValidateCep(request.Cep))
             return Result.Fail("Invalid Cep");
         
-        if(await _userClaimsService.HasDoormanClaims(request.Email))
-        {
-            var result = await _signInManager.PasswordSignInAsync(request.Email, request.Senha, false, true);
-    
-            if (result.Succeeded)
-                return Result.Ok(await _jwtService.GenerateJWTDoorman(request.Email));
-            
-            if (result.IsLockedOut)
-                return Result.Fail("Usuário temporariamente bloqueados por tentativas inválidas.");
-        }
+        var user = await _userManager.FindByEmailAsync(request.Email);
         
-        return Result.Fail("Usuário ou Senha incorretos"); 
+        if (user == null) return Result.Fail("Usuario incorreto");
+        
+        var result = await _userManager.ResetPasswordAsync(user, request.Token, request.Password);
+
+        return result.Succeeded ? Result.Ok(await _jwtService.GenerateJWTAdmin(user.Email)) : Result.Fail("Email ou token incorreto");
+    }
+
+    public async Task<Result> LoginDoorman(DoormanLoginVM request)
+    {
+        if (!ValidateCep(request.Cep))
+            return Result.Fail("Invalid Cep");
+
+        if (!await _userClaimsService.HasDoormanClaims(request.Email))
+            return Result.Fail("Usuário ou Senha incorretos");
+        
+        var result = await _signInManager.PasswordSignInAsync(request.Email, request.Senha, false, true);
+    
+        if (result.Succeeded)
+            return Result.Ok(await _jwtService.GenerateJWTDoorman(request.Email));
+
+        return Result.Fail(result.IsLockedOut ? "Usuário temporariamente bloqueados por tentativas inválidas." : "Usuário ou Senha incorretos");
     }
 
 

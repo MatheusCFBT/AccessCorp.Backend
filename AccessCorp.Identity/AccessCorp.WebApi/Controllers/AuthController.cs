@@ -1,5 +1,6 @@
 ﻿using AccessCorp.Application.Entities;
 using AccessCorp.Application.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AccessCorp.WebApi.Controllers;
@@ -7,7 +8,6 @@ namespace AccessCorp.WebApi.Controllers;
 [Route("identity")]
 public class AuthController : MainController
 {
-    private readonly ILogger<AuthController> _logger;
     private readonly IAuthService _authService;
     
     public AuthController(IAuthService authService)
@@ -51,7 +51,44 @@ public class AuthController : MainController
         }
             
         return CustomResponse();
+    }
+    
+    [HttpPost("first-access-administrator")]
+    [ProducesResponseType<ActionResult>(400)]
+    [ProducesResponseType<ActionResult>(200)]
+    public async Task<ActionResult> FirsAccessAdministrator([FromBody] AdministratorFirstAccessVM request)
+    {
+        if (!ModelState.IsValid) return CustomResponse(ModelState);
+        
+        var result = await _authService.FirsAccessAdministrator(request);
+      
+        if (result.Success) return CustomResponse(result);
+        
+        foreach (var error in result.Errors)
+        {
+            AddErrorProcess(error);
+        }
+            
+        return CustomResponse();
+    }
 
+    [HttpPost("reset-password-administrator")]
+    [ProducesResponseType<ActionResult>(400)]
+    [ProducesResponseType<ActionResult>(200)]
+    public async Task<ActionResult> ResetPasswordAdministrator([FromBody] AdministratorResetPasswordVM request)
+    {
+        if (!ModelState.IsValid) return CustomResponse(ModelState);
+        
+        var result = await _authService.ResetPasswordAdministrator(request);
+      
+        if (result.Success) return CustomResponse(result);
+        
+        foreach (var error in result.Errors)
+        {
+            AddErrorProcess(error);
+        }
+            
+        return CustomResponse();
     }
     
     [HttpPost("login-doorman")]
