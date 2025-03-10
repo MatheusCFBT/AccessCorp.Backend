@@ -18,6 +18,7 @@ public static class DependencyInjectionConfig
 
         builder.Services.AddTransient<ISendEmailService, SendEmailService>();
         builder.Services.AddScoped<IAuthService, AuthService>();
+        builder.Services.AddScoped<IAdministratorService, AdministratorService>();
         builder.Services.AddScoped<IUserClaimsService, UserClaimsService>();
         builder.Services.AddScoped<ICepValidationService, CepValidationService>();
         builder.Services.AddScoped<IJwtService, JwtService>();

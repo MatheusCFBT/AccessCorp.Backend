@@ -20,7 +20,7 @@ public static class ApiConfig
     public static WebApplication UseApiConfiguration(this WebApplication app)
     {
         app.UseSwaggerConfiguration();
-        
+
         if (app.Environment.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();
@@ -28,10 +28,13 @@ public static class ApiConfig
 
         app.UseHttpsRedirection();
 
-        app.UseRouting();
+        app.UseRouting(); 
 
-        app.UseIdentityConfiguration();
-        
+        app.UseAuthentication(); 
+        app.UseAuthorization(); 
+
+        app.UseIdentityConfiguration(); 
+
         app.MapControllers();
 
         app.Run();

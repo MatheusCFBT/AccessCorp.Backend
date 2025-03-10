@@ -7,6 +7,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1 - WebApi", "1 - WebApi", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccessCorp.WebApi", "AccessCorp.Users\AccessCorp.WebApi\AccessCorp.WebApi.csproj", "{D8F5256A-E50D-476B-B909-825A1CF5FFF2}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2 - Application", "2 - Application", "{5D02B544-AA19-47F9-B9F2-0FD0F7BB559E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
