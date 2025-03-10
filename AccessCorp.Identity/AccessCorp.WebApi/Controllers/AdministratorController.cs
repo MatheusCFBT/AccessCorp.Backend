@@ -1,11 +1,13 @@
 ﻿using AccessCorp.Application.Entities;
 using AccessCorp.Application.Interfaces;
+using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AccessCorp.WebApi.Controllers;
 
-[Authorize("AdminPolicy"), Route("identity/administrator")]
+[ApiVersion("1.0")]
+[Authorize("AdminPolicy"), Route("identity/v1/administrator")]
 public class AdministratorController : MainController
 {
     private readonly IAuthService _authService;

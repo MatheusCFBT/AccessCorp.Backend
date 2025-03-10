@@ -1,11 +1,13 @@
 ﻿using AccessCorp.Application.Entities;
 using AccessCorp.Application.Interfaces;
+using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AccessCorp.WebApi.Controllers;
 
-[Authorize("AdminPolicy"), Route("identity/doorman")]
+    [ApiVersion("1.0")]
+[Authorize("AdminPolicy"), Route("identity/v1/doorman")]
 public class DoormanController : MainController
 {
     private readonly IDoormanService _doormanService;
@@ -16,6 +18,9 @@ public class DoormanController : MainController
     }
 
     [HttpGet("view-doorman")]
+    [ProducesResponseType<ActionResult>(400)]
+    [ProducesResponseType<ActionResult>(401)]
+    [ProducesResponseType<ActionResult>(200)]
     public async Task<ActionResult> View ([FromQuery] string id)
     {
         var result = await _doormanService.ViewDoorman(id);

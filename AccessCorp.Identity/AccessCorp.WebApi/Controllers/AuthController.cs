@@ -1,10 +1,12 @@
 ﻿using AccessCorp.Application.Entities;
 using AccessCorp.Application.Interfaces;
+using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AccessCorp.WebApi.Controllers;
 
-[Route("identity")]
+[ApiVersion("1.0")]
+[Route("identity/v1")]
 public class AuthController : MainController
 {
     private readonly IAuthService _authService;
