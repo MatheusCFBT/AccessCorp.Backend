@@ -1,4 +1,8 @@
-﻿using Microsoft.OpenApi.Models;
+﻿using Asp.Versioning;
+using Asp.Versioning.ApiExplorer;
+using Microsoft.Extensions.Options;
+using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace AccessCorp.WebApi.Configuration;
 
@@ -6,16 +10,22 @@ public static class SwaggerConfig
 {
     public static WebApplicationBuilder AddSwaggerConfiguration(this WebApplicationBuilder builder)
     {
+        builder.Services.AddApiVersioning(options =>
+        {
+            options.AssumeDefaultVersionWhenUnspecified = true;
+            options.DefaultApiVersion = new ApiVersion(1, 0);
+            options.ReportApiVersions = true;
+        }).AddApiExplorer(options =>
+        {
+            options.GroupNameFormat = "'v'VVV";
+            options.SubstituteApiVersionInUrl = true;
+        });
+        
+        builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, SwaggerConfigOptions>();
+
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen(s =>
         {
-            s.SwaggerDoc("v1", new OpenApiInfo
-            {
-                Title = "AccessCorp API",
-                Description = "Esta API realiza a autenticação e ações do banco de dados",
-                Contact = new OpenApiContact() { Name = "Matheus Caldana", Email = "matheusterzini@gmail.com" }
-            });
-            
             s.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
                 Description = "Insira o token JWT desta maneira: Bearer {seu token}",
@@ -44,12 +54,53 @@ public static class SwaggerConfig
         
         return builder;
     }
-
+    
     public static WebApplication UseSwaggerConfiguration(this WebApplication app)
     {
+        var provider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
+
         app.UseSwagger();
-        app.UseSwaggerUI();
+        app.UseSwaggerUI(options =>
+        {
+            foreach (var description in provider.ApiVersionDescriptions)
+            {
+                options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", $"AccessCorp API {description.GroupName}");
+            }
+        });
         
         return app;
+    }
+}
+
+public class SwaggerConfigOptions : IConfigureOptions<SwaggerGenOptions>
+{
+    private readonly IApiVersionDescriptionProvider _provider;
+
+    public SwaggerConfigOptions(IApiVersionDescriptionProvider provider)
+    {
+        _provider = provider;
+    }
+    
+    public void Configure(SwaggerGenOptions options)
+    {
+        foreach (var description in _provider.ApiVersionDescriptions)
+        {
+            options.SwaggerDoc(description.GroupName, CreateInfoForApiVersion(description));
+        }
+    }
+    
+    private static OpenApiInfo CreateInfoForApiVersion(ApiVersionDescription description)
+    {
+        return new OpenApiInfo
+        {
+            Title = "AccessCorp API",
+            Version = description.ApiVersion.ToString(),
+            Description = "Esta API realiza a autenticação",
+            Contact = new OpenApiContact
+            {
+                Name = "Matheus Caldana",
+                Email = "matheusterzini@gmail.com"
+            }
+        };
     }
 }
