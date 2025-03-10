@@ -17,8 +17,27 @@ public class AdministratorController : MainController
         _administratorService = administratorService;
     }
     
+    [HttpGet("view-administrator")]
+    [ProducesResponseType<ActionResult>(400)]
+    [ProducesResponseType<ActionResult>(401)]
+    [ProducesResponseType<ActionResult>(200)]
+    public async Task<ActionResult> View ([FromQuery] string id)
+    {
+        var result = await _administratorService.ViewAdministrator(id);
+        
+        if (result.Success) return CustomResponse(result);
+        
+        foreach (var error in result.Errors)
+        {
+            AddErrorProcess(error);
+        }
+            
+        return CustomResponse();
+    }
+    
     [HttpPost("register-administrator")]
     [ProducesResponseType<ActionResult>(400)]
+    [ProducesResponseType<ActionResult>(401)]
     [ProducesResponseType<ActionResult>(200)]
     public async Task<ActionResult> Register ([FromBody] AdministratorRegisterVM request)
     {
@@ -38,12 +57,13 @@ public class AdministratorController : MainController
     
     [HttpPut("update-administrator")]
     [ProducesResponseType<ActionResult>(400)]
+    [ProducesResponseType<ActionResult>(401)]
     [ProducesResponseType<ActionResult>(200)]
-    public async Task<ActionResult> Update ([FromBody] AdministratorUpdateVM request)
+    public async Task<ActionResult> Update ([FromQuery] string id ,[FromBody] AdministratorUpdateVM request)
     {
         if (!ModelState.IsValid) return CustomResponse(ModelState);
     
-        var result = await _administratorService.EditAdministrator(request);
+        var result = await _administratorService.EditAdministrator(id, request);
         
         if (result.Success) return CustomResponse(result);
         
@@ -54,4 +74,23 @@ public class AdministratorController : MainController
             
         return CustomResponse();
     }
+    
+    [HttpDelete("exclude-administrator")]
+    [ProducesResponseType<ActionResult>(400)]
+    [ProducesResponseType<ActionResult>(401)]
+    [ProducesResponseType<ActionResult>(200)]
+    public async Task<ActionResult> Exclude ([FromQuery] string id)
+    {
+        var result = await _administratorService.ExcludeAdministrator(id);
+        
+        if (result.Success) return CustomResponse(result);
+        
+        foreach (var error in result.Errors)
+        {
+            AddErrorProcess(error);
+        }
+            
+        return CustomResponse();
+    }
+    
 }
