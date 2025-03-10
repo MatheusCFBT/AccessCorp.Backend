@@ -16,6 +16,7 @@ public static class DependencyInjectionConfig
 
         builder.Services.AddSingleton<SendEmailService>();
 
+        builder.Services.AddScoped<IDoormanService, DoormanService>();
         builder.Services.AddTransient<ISendEmailService, SendEmailService>();
         builder.Services.AddScoped<IAuthService, AuthService>();
         builder.Services.AddScoped<IAdministratorService, AdministratorService>();
