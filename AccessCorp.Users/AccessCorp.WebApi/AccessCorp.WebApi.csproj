@@ -15,4 +15,9 @@
     <Folder Include="Controllers\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\AccessCorp.Application\AccessCorp.Application\AccessCorp.Application.csproj" />
+    <ProjectReference Include="..\AccessCorp.Infra\AccessCorp.Infra\AccessCorp.Infra.csproj" />
+  </ItemGroup>
+
 </Project>
