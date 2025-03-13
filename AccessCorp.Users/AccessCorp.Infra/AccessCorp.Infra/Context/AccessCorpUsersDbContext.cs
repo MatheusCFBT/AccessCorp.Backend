@@ -1,10 +1,21 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AccessCorp.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
-namespace AccessCorp.Infra.Context;
+namespace AccessCorp.WebApi.Context;
 
 public class AccessCorpUsersDbContext : DbContext
 {
     public AccessCorpUsersDbContext(DbContextOptions<AccessCorpUsersDbContext> options) : base(options) { }
+
+    public DbSet<Administrator> Administrators { get; set; }
+    public DbSet<Doorman> Doormans { get; set; }
+    public DbSet<Guest> Guests { get; set; }
+    public DbSet<Resident> Residents { get; set; }
     
-    Db
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(AccessCorpUsersDbContext).Assembly);
+        
+        base.OnModelCreating(modelBuilder);
+    }
 }
