@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+		<RootNamespace>AccessCorpUsers.Application</RootNamespace>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="AutoMapper" Version="14.0.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\AccessCorp.Domain\AccessCorpUsers.Domain.csproj" />
+	  <ProjectReference Include="..\AccessCorp.Infra\AccessCorpUsers.Infra.csproj" />
+	</ItemGroup>
+</Project>
