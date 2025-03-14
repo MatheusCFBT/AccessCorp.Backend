@@ -1,10 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Security.Principal;
 
 namespace AccessCorpUsers.Application.Entities
 {
-    public class AdministratorVM
+    public class DoormanVM
     {
         [Key]
         public Guid Id { get; set; }
@@ -34,34 +33,10 @@ namespace AccessCorpUsers.Application.Entities
         public string Cep { get; set; }
 
         [Required(ErrorMessage = "O campo {0} é obrigatório ")]
-        public int HouseNumber { get; set; }
-
-        [Required(ErrorMessage = "O campo {0} é obrigatório ")]
         [StringLength(40, MinimumLength = 6, ErrorMessage = "O campo {0} precisa ter entre {2} e {1} caracteres")]
         public string Password { get; set; }
-        public IEnumerable<DoormanVM> Doormans { get; set; }
-        public IEnumerable<ResidentVM> Residents { get; set; }
 
         [NotMapped]
         public Guid IdentityId { get; set; }
-    }
-
-    public class AdministratorIdentityRequest 
-    {
-        public Guid UserId { get; set; }
-        [Required(ErrorMessage = "O campo {0} é obrigatório ")]
-        [EmailAddress(ErrorMessage = "O campo {0} está em formato inválido")]
-        public string Email { get; set; }
-
-        [Required(ErrorMessage = "O campo {0} é obrigatório ")]
-        [StringLength(8, MinimumLength = 8, ErrorMessage = "O campo {0} precisa ter {1} digitos")]
-        public string Cep { get; set; }
-
-        [Required(ErrorMessage = "O campo {0} é obrigatório ")]
-        [StringLength(40, MinimumLength = 6, ErrorMessage = "O campo {0} precisa ter entre {2} e {1} caracteres")]
-        public string Password { get; set; }
-
-        [Compare("Password", ErrorMessage = "As senhas não conferem")]
-        public string PasswordConfirmed { get; set; }
     }
 }

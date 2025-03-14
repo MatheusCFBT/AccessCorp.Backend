@@ -9,6 +9,7 @@ namespace AccessCorpUsers.Application.Configuration
         public AutomapperConfig() 
         {
             CreateMap<Administrator, AdministratorVM>().ReverseMap();
+            CreateMap<Doorman, DoormanVM>().ReverseMap();
         }
     }
 }

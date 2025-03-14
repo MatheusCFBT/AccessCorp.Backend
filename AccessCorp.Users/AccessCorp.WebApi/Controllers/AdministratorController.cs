@@ -1,10 +1,16 @@
 ﻿using AccessCorpUsers.Application.Entities;
 using AccessCorpUsers.Application.Interfaces;
+using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Newtonsoft.Json;
+using System.Security.Claims;
 
 namespace AccessCorpUsers.WebApi.Controllers;
 
-[ApiController, Route("users/v1/administrator")]
+[ApiVersion("1.0")]
+[Route("users/v1/administrator")]
+
 public class AdministratorController : MainController
 {
     private readonly IAdministratorService _administratorService;
@@ -14,16 +20,21 @@ public class AdministratorController : MainController
         _administratorService = administratorService;
     }
 
-    [HttpGet("view-all")]
-    public async Task<ActionResult> ViewAllAdministrators()
+    //TODO
+    // Criar para pegar todos os porteiros e residentes com o cep igual ao do Adm que está logado
+    [HttpGet("view-all-admin")]
+    public async Task<ActionResult<List<AdministratorVM>>> ViewAllAdministrators()
     {
-        var result = await _administratorService.ViewAllAdministrators();
+        var userId = GetUserId(HttpContext.User);
+        var result = await _administratorService.ViewAllAdministrators(userId.email);
 
         return CustomResponse(result);
     }
 
+    //TODO
+    // Criar para pegar os porteiros ou residentes
     [HttpGet("{id}")]
-    public async Task<ActionResult> ViewAdministratorById(Guid id)
+    public async Task<ActionResult<AdministratorVM>> ViewAdministratorById(Guid id)
     {
         var result = await _administratorService.ViewAdministratorById(id);
 
@@ -65,6 +76,15 @@ public class AdministratorController : MainController
 
         if (result == null)
             return CustomResponse();
+
+        return CustomResponse(result);
+    }
+
+    [HttpGet("view-all")]
+    public async Task<ActionResult> ViewAllUsersByAdmin()
+    {
+        var userId = GetUserId(HttpContext.User);
+        var result = await _administratorService.GetAdminDoormansResidents(userId.email);
 
         return CustomResponse(result);
     }

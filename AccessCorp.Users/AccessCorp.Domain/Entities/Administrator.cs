@@ -10,5 +10,7 @@ public class Administrator : Entity
     public string Cep { get; set; }
     public int HouseNumber { get; set; }
     public string Password { get; set; }
+    public IEnumerable<Doorman>? Doormans { get; set; }
+    public IEnumerable<Resident>? Residents { get; set; }
     public Guid IdentityId { get; set; }
 }
