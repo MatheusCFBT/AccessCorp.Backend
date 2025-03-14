@@ -5,19 +5,19 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1 - WebApi", "1 - WebApi", "{54375AA3-888F-4C46-B575-904513EEA438}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccessCorp.WebApi", "AccessCorp.Users\AccessCorp.WebApi\AccessCorp.WebApi.csproj", "{D8F5256A-E50D-476B-B909-825A1CF5FFF2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccessCorp.WebApi", "AccessCorp.Users\AccessCorp.WebApi\AccessCorpUsers.WebApi.csproj", "{D8F5256A-E50D-476B-B909-825A1CF5FFF2}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2 - Application", "2 - Application", "{5D02B544-AA19-47F9-B9F2-0FD0F7BB559E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccessCorp.Application", "AccessCorp.Users\AccessCorp.Application\AccessCorp.Application\AccessCorp.Application.csproj", "{E9610A53-A018-47D2-B6D8-AD063912C20C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccessCorp.Application", "AccessCorp.Users\AccessCorp.Application\AccessCorpUsers.Application.csproj", "{E9610A53-A018-47D2-B6D8-AD063912C20C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3 - Domain", "3 - Domain", "{0D15AC63-1D0C-4B2A-88EB-03E8E784EE6B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccessCorp.Domain", "AccessCorp.Users\AccessCorp.Domain\AccessCorp.Domain\AccessCorp.Domain.csproj", "{CBB34558-26A5-4B6E-B432-7FDB0F7C111E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccessCorp.Domain", "AccessCorp.Users\AccessCorp.Domain\AccessCorpUsers.Domain.csproj", "{CBB34558-26A5-4B6E-B432-7FDB0F7C111E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "4 - Infra", "4 - Infra", "{30B9CBE9-3A6A-4CB1-A47D-9E407D4486A1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccessCorp.Infra", "AccessCorp.Users\AccessCorp.Infra\AccessCorp.Infra\AccessCorp.Infra.csproj", "{721478AA-7204-4988-ABE3-36887118A905}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccessCorp.Infra", "AccessCorp.Users\AccessCorp.Infra\AccessCorpUsers.Infra.csproj", "{721478AA-7204-4988-ABE3-36887118A905}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
