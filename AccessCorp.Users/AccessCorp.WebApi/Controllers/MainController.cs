@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AccessCorpUsers.Application.Entities;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Newtonsoft.Json;
+using System.Security.Claims;
 
 namespace AccessCorpUsers.WebApi.Controllers;
 
@@ -41,5 +44,10 @@ public abstract class MainController : Controller
     protected void ClearErrorProcess()
     {
         Errors.Clear();
+    }
+    protected static (Guid userId, string email) GetUserId(ClaimsPrincipal principal)
+    {
+        AdministratorIdentityRequest userLogin = JsonConvert.DeserializeObject<AdministratorIdentityRequest>(principal?.FindFirst("data").Value);
+        return (userId: userLogin.UserId, email: userLogin.Email);
     }
 }

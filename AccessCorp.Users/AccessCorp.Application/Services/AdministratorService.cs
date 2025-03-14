@@ -19,9 +19,11 @@ namespace AccessCorpUsers.Application.Services
             _identityApiClient = client;
             _mapper = mapper;
         }
-        public async Task<List<AdministratorVM>> ViewAllAdministrators()
+        public async Task<List<AdministratorVM>> ViewAllAdministrators(string email)
         {
-            var administrators = await _administratorRepository.GetAll();
+            var requestAdmin = await _administratorRepository.GetAdminByEmail(email);
+
+            var administrators = await _administratorRepository.GetAdminsByCep(requestAdmin.Cep);
 
             var adminVM = _mapper.Map<List<AdministratorVM>>(administrators);
 
@@ -92,5 +94,15 @@ namespace AccessCorpUsers.Application.Services
             _administratorRepository.Dispose();
         }
 
+        public async Task<AdministratorVM> GetAdminDoormansResidents(string email)
+        {
+            var requestAdmin = await _administratorRepository.GetAdminByEmail(email);
+
+            var users = _administratorRepository.GetAdminDoormansResidents(requestAdmin.Cep);
+
+            var adminVM = _mapper.Map<AdministratorVM>(users);
+
+            return adminVM;
+        }
     }
 }
