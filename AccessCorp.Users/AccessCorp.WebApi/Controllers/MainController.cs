@@ -47,7 +47,10 @@ public abstract class MainController : Controller
     }
     protected static (Guid userId, string email) GetUserId(ClaimsPrincipal principal)
     {
-        AdministratorIdentityRequest userLogin = JsonConvert.DeserializeObject<AdministratorIdentityRequest>(principal?.FindFirst("data").Value);
-        return (userId: userLogin.UserId, email: userLogin.Email);
+        var userIdClaim = principal?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var emailClaim = principal?.FindFirst(ClaimTypes.Email)?.Value;
+
+        return (Guid.Parse(userIdClaim), emailClaim);
     }
+
 }

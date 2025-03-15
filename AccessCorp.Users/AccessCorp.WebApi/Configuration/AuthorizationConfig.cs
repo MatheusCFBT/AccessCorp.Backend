@@ -11,32 +11,9 @@ namespace AccessCorpUsers.WebApi.Configuration;
 
 public static class IdentityConfig
 {
-    public static WebApplicationBuilder AddIdentityConfiguration(this WebApplicationBuilder builder)
+    public static WebApplicationBuilder AddJwtConfiguration(this WebApplicationBuilder builder)
     {
 
-        builder.Services.AddDbContext<AccessCorpUsersDbContext>(options =>
-            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-        builder.Services.AddDefaultIdentity<IdentityUser>()
-            .AddRoles<IdentityRole>()
-            .AddDefaultTokenProviders();
-
-        builder.Services.AddAuthorization(options =>
-        {
-            options.AddPolicy("AdminPolicy", policy =>
-                policy.Requirements.Add(new PermissionRequirement("FullAccess")));
-
-            options.AddPolicy("DoormanPolicy", policy =>
-                policy.Requirements.Add(new PermissionRequirement("LimitedAccess")));
-        });
-
-        builder.AddJwtConfiguration();
-
-        return builder;
-    }
-
-    private static WebApplicationBuilder AddJwtConfiguration(this WebApplicationBuilder builder)
-    {
         var appSettingsSection = builder.Configuration.GetSection("AppSettings");
         builder.Services.Configure<AppSettingsConfiguration>(appSettingsSection);
 
@@ -65,10 +42,10 @@ public static class IdentityConfig
         return builder;
     }
 
-    public static WebApplication UseIdentityConfiguration(this WebApplication app)
+    public static WebApplication UseAuthorizationConfiguration(this WebApplication app)
     {
         app.UseAuthentication();
-        app.UseAuthentication();
+        app.UseAuthorization();
 
         return app;
     }

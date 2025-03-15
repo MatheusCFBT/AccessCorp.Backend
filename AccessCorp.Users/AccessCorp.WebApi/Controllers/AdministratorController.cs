@@ -1,16 +1,14 @@
 ﻿using AccessCorpUsers.Application.Entities;
 using AccessCorpUsers.Application.Interfaces;
+using AccessCorpUsers.WebApi.Extensions;
 using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Newtonsoft.Json;
-using System.Security.Claims;
 
 namespace AccessCorpUsers.WebApi.Controllers;
 
 [ApiVersion("1.0")]
-[Route("users/v1/administrator")]
-
+[ClaimsAuthorize("Permission", "FullAccess"), Route("users/v1/administrator")]
 public class AdministratorController : MainController
 {
     private readonly IAdministratorService _administratorService;
@@ -52,7 +50,14 @@ public class AdministratorController : MainController
 
         var result = await _administratorService.RegisterAdministrator(request);
 
-        return CustomResponse(result);
+        if (result.Success) return CustomResponse(result);
+
+        foreach (var error in result.Errors)
+        {
+            AddErrorProcess(error);
+        }
+
+        return CustomResponse();
     }
 
     [HttpPut("{id}")]
@@ -80,12 +85,19 @@ public class AdministratorController : MainController
         return CustomResponse(result);
     }
 
+    [ClaimsAuthorize("Permission", "FullAccess")]
     [HttpGet("view-all")]
     public async Task<ActionResult> ViewAllUsersByAdmin()
     {
         var userId = GetUserId(HttpContext.User);
-        var result = await _administratorService.GetAdminDoormansResidents(userId.email);
 
-        return CustomResponse(result);
+        if (userId.email != null && userId.userId != null)
+        {
+            var result = await _administratorService.GetAdminDoormansResidents(userId.email);
+
+            return CustomResponse(result);
+        }
+
+        return CustomResponse(ModelState);
     }
 }

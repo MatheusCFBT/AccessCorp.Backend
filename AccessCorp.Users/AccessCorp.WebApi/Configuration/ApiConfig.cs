@@ -28,10 +28,9 @@ public static class ApiConfig
 
         app.UseHttpsRedirection();
 
-        app.UseRouting(); 
+        app.UseRouting();
 
-        app.UseAuthentication(); 
-        app.UseAuthorization(); 
+        app.UseAuthorizationConfiguration(); 
 
         app.MapControllers();
 

@@ -19,7 +19,7 @@ public class AdministratorController : MainController
         _administratorService = administratorService;
     }
     
-    [HttpGet("view-administrator")]
+    [HttpGet("view-administrator")] 
     [ProducesResponseType<ActionResult>(400)]
     [ProducesResponseType<ActionResult>(401)]
     [ProducesResponseType<ActionResult>(200)]
