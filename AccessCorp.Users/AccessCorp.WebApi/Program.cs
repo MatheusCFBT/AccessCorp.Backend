@@ -23,6 +23,7 @@ builder.AddApiConfiguration()
 builder.Services.AddAutoMapper(typeof(Program));
 
 
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.Configure<IdentityApiSettings>(builder.Configuration.GetSection("IdentityApi"));
 builder.Services.AddScoped<IAdministratorRepository, AdministratorRepository>();

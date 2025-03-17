@@ -49,14 +49,14 @@ namespace AccessCorpUsers.Application.Services
 
             AdministratorIdentityRequest identityRequest = new()
             {
-                Email = request.Cpf,
+                Email = request.Email,
                 Password = request.Password,
                 PasswordConfirmed = request.Password
             };
 
             var resultRequest = await _identityApiClient.RegisterAdministratorAsync(identityRequest);
 
-            if (resultRequest == null)
+            if (!resultRequest.IsSuccessStatusCode)
                 return Result.Fail($"Erro, {resultRequest.Content}");
 
             var admin = _mapper.Map<Administrator>(request);
