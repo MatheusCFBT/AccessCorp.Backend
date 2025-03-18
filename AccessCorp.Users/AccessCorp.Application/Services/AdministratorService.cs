@@ -66,10 +66,10 @@ namespace AccessCorpUsers.Application.Services
             return Result.Ok("Usuário cadastrado");
         }
 
-        public async Task<AdministratorVM> UpdateAdministrator(string email, AdministratorVM request)
+        public async Task<Result> UpdateAdministrator(string email, AdministratorVM request)
         {
             if (!CpfValidation.Validate(request.Cpf) || !CepValidation.Validate(request.Cep))
-                return new AdministratorVM();
+                return Result.Fail("CPF ou CEP inválidos");
 
             AdministratorIdentityRequest identityRequest = new()
             {
@@ -84,10 +84,10 @@ namespace AccessCorpUsers.Application.Services
 
             await _administratorRepository.Update(admin);
 
-            return request;
+            return Result.Ok("Usuário alterado");
         }
 
-        public async Task<AdministratorVM> ExcludeAdministrator(string email)
+        public async Task<Result> ExcludeAdministrator(string email)
         {
             var admin = await _administratorRepository.GetAdminByEmail(email);
             // TODO padronizar o response no application
@@ -95,7 +95,8 @@ namespace AccessCorpUsers.Application.Services
             
             // criar classes para cada request e voltar a fazer as requisições pelo Id
             await _administratorRepository.Remove(admin.Id);
-            return new AdministratorVM();
+
+            return Result.Ok("Usúario deletado");
         }
 
         public void Dispose()

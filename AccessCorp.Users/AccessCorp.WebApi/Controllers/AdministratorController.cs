@@ -1,5 +1,6 @@
 ﻿using AccessCorpUsers.Application.Entities;
 using AccessCorpUsers.Application.Interfaces;
+using AccessCorpUsers.Application.Services;
 using AccessCorpUsers.WebApi.Extensions;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
@@ -11,11 +12,13 @@ namespace AccessCorpUsers.WebApi.Controllers;
 [ClaimsAuthorize("Permission", "FullAccess"), Route("users/v1/administrator")]
 public class AdministratorController : MainController
 {
+    private readonly IResidentService _residentService;
     private readonly IAdministratorService _administratorService;
 
-    public AdministratorController(IAdministratorService administratorService)
+    public AdministratorController(IAdministratorService administratorService, IResidentService residentService)
     {
         _administratorService = administratorService;
+        _residentService = residentService;
     }
 
     //TODO
@@ -25,6 +28,9 @@ public class AdministratorController : MainController
     {
         var userId = GetUserId(HttpContext.User);
         var result = await _administratorService.ViewAllAdministrators(userId.email);
+
+        if (result == null)
+            return CustomResponse();
 
         return CustomResponse(result);
     }
@@ -71,7 +77,14 @@ public class AdministratorController : MainController
 
         var result = await _administratorService.UpdateAdministrator(email, request);
 
-        return CustomResponse(result);
+        if (result.Success) return CustomResponse(result);
+
+        foreach (var error in result.Errors)
+        {
+            AddErrorProcess(error);
+        }
+
+        return CustomResponse();
     }
 
     [HttpDelete("{email}")]
@@ -79,13 +92,90 @@ public class AdministratorController : MainController
     {
         var result = await _administratorService.ExcludeAdministrator(email);
 
+        if (result.Success) return CustomResponse(result);
+
+        foreach (var error in result.Errors)
+        {
+            AddErrorProcess(error);
+        }
+
+        return CustomResponse();
+    }
+
+    [HttpGet("view-all-residents")]
+    public async Task<ActionResult<List<ResidentVM>>> ViewAllResidents()
+    {
+        var userId = GetUserId(HttpContext.User);
+        var result = await _residentService.ViewAllResidents(userId.email);
+
         if (result == null)
             return CustomResponse();
 
         return CustomResponse(result);
     }
 
-    [ClaimsAuthorize("Permission", "FullAccess")]
+    [HttpGet("view-resident/{id}")]
+    public async Task<ActionResult<ResidentVM>> ViewResidentById(Guid id)
+    {
+        var result = await _residentService.ViewResidentById(id);
+
+        if (result == null)
+            return CustomResponse();
+
+        return CustomResponse(result);
+    }
+
+    [HttpPost("register-resident")]
+    public async Task<ActionResult<ResidentVM>> RegisterResident(ResidentVM request)
+    {
+        if (!ModelState.IsValid)
+            return CustomResponse(ModelState);
+
+        var result = await _residentService.RegisterResident(request);
+
+        if (result.Success) return CustomResponse(result);
+
+        foreach (var error in result.Errors)
+        {
+            AddErrorProcess(error);
+        }
+
+        return CustomResponse();
+    }
+
+    [HttpPut("update-resident/{email}")]
+    public async Task<ActionResult<List<ResidentVM>>> UpdateResident(string email, ResidentVM request)
+    {
+        if (!ModelState.IsValid)
+            return CustomResponse(ModelState);
+
+        var result = await _residentService.UpdateResident(email, request);
+
+        if (result.Success) return CustomResponse(result);
+
+        foreach (var error in result.Errors)
+        {
+            AddErrorProcess(error);
+        }
+
+        return CustomResponse();
+    }
+
+    [HttpDelete("exclude-resident/{email}")]
+    public async Task<ActionResult<List<ResidentVM>>> ExcludeResidents(string email)
+    {
+        var result = await _residentService.ExcludeResident(email);
+
+        if (result.Success) return CustomResponse(result);
+
+        foreach (var error in result.Errors)
+        {
+            AddErrorProcess(error);
+        }
+
+        return CustomResponse();
+    }
+
     [HttpGet("view-all")]
     public async Task<ActionResult> ViewAllUsersByAdmin()
     {

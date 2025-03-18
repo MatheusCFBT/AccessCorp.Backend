@@ -29,6 +29,8 @@ builder.Services.Configure<IdentityApiSettings>(builder.Configuration.GetSection
 builder.Services.AddScoped<IAdministratorRepository, AdministratorRepository>();
 builder.Services.AddScoped<IAdministratorService, AdministratorService>();
 builder.Services.AddHttpClient<IIdentityApiClient, IdentityApiClient>();
+builder.Services.AddScoped<IResidentRepository, ResidentRepository>();
+builder.Services.AddScoped<IResidentService, ResidentService>();
 
 var app = builder.Build();
 
