@@ -4,10 +4,10 @@ namespace AccessCorpUsers.Application.Interfaces
 {
     public interface IResidentService
     {
-        public Task<Result> ViewAllAdministrators(string email);
-        public Task<ResidentVM> ViewAdministratorById(Guid id);
-        public Task<Result> RegisterAdministrator(ResidentVM request);
-        public Task<ResidentVM> UpdateAdministrator(string email, ResidentVM request);
-        public Task<ResidentVM> ExcludeAdministrator(string id);
+        public Task<Result> ViewAllResidents(string email);
+        public Task<ResidentVM> ViewResidentById(Guid id);
+        public Task<Result> RegisterResident(ResidentVM request);
+        public Task<Result> UpdateResident(string email, ResidentVM request);
+        public Task<Result> ExcludeResident(string email);
     }
 }

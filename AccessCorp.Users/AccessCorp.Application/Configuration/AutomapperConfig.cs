@@ -16,8 +16,9 @@ namespace AccessCorpUsers.Application.Configuration
                 .ForMember(dest => dest.Residents, opt => opt.Ignore())
                 .ForMember(dest => dest.Doormans, opt => opt.Ignore());
 
-
             CreateMap<Doorman, DoormanVM>().ReverseMap();
+
+            CreateMap<Resident, ResidentVM>().ReverseMap();
         }
     }
 }

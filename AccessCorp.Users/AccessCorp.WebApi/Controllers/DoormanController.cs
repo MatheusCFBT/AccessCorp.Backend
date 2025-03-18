@@ -1,5 +1,6 @@
 ﻿using AccessCorpUsers.Application.Entities;
 using AccessCorpUsers.Application.Interfaces;
+using AccessCorpUsers.Application.Services;
 using AccessCorpUsers.WebApi.Extensions;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
@@ -11,69 +12,71 @@ namespace AccessCorpUsers.WebApi.Controllers
     public class DoormanController : MainController
     {
         private readonly IDoormanService _doormanService;
-        public DoormanController(IDoormanService doormanService)
+        private readonly IResidentService _residentService;
+        public DoormanController(IDoormanService doormanService, IResidentService residentService)
         {
             _doormanService = doormanService;
+            _residentService = residentService;
         }
 
-        [HttpGet("view-all")]
-        public async Task<ActionResult<List<DoormanVM>>> ViewAllDoorman()
-        {
-            var result = await _doormanService.ViewAllDoorman();
+        //[HttpGet("view-all")]
+        //public async Task<ActionResult<List<DoormanVM>>> ViewAllDoorman()
+        //{
+        //    var result = await _doormanService.ViewAllDoorman();
 
-            if (result == null)
-                return CustomResponse();
+        //    if (result == null)
+        //        return CustomResponse();
 
-            return CustomResponse(result);
-        }
+        //    return CustomResponse(result);
+        //}
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<DoormanVM>> ViewDoormanById(Guid id)
-        {
-            var result = await _doormanService.ViewDoormanById(id);
+        //[HttpGet("{id}")]
+        //public async Task<ActionResult<DoormanVM>> ViewDoormanById(Guid id)
+        //{
+        //    var result = await _doormanService.ViewDoormanById(id);
 
-            if (result == null)
-                return CustomResponse();
+        //    if (result == null)
+        //        return CustomResponse();
 
-            return CustomResponse(result);
-        }
+        //    return CustomResponse(result);
+        //}
 
-        [HttpPost("register")]
-        public async Task<ActionResult> RegisterDoorman(DoormanVM request)
-        {
-            if (!ModelState.IsValid)
-                return CustomResponse(ModelState);
+        //[HttpPost("register")]
+        //public async Task<ActionResult> RegisterDoorman(DoormanVM request)
+        //{
+        //    if (!ModelState.IsValid)
+        //        return CustomResponse(ModelState);
 
-            var result = await _doormanService.RegisterDoorman(request);
+        //    var result = await _doormanService.RegisterDoorman(request);
 
-            return CustomResponse(result);
-        }
+        //    return CustomResponse(result);
+        //}
 
-        [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateDoorman(Guid id,DoormanVM request)
-        {
-            if (id != request.Id)
-                return CustomResponse();
+        //[HttpPut("{id}")]
+        //public async Task<ActionResult> UpdateDoorman(Guid id,DoormanVM request)
+        //{
+        //    if (id != request.Id)
+        //        return CustomResponse();
 
-            if (!ModelState.IsValid)
-                return CustomResponse(ModelState);
+        //    if (!ModelState.IsValid)
+        //        return CustomResponse(ModelState);
 
-            var result = await _doormanService.UpdateDoorman(id, request);
+        //    var result = await _doormanService.UpdateDoorman(id, request);
 
-            return CustomResponse(result);
-        }
+        //    return CustomResponse(result);
+        //}
 
-        [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteDoorman(Guid id)
-        {
-            var result = await _doormanService.ExcludeDoorman(id);
+        //[HttpDelete("{id}")]
+        //public async Task<ActionResult> DeleteDoorman(Guid id)
+        //{
+        //    var result = await _doormanService.ExcludeDoorman(id);
 
-            if (result == null)
-                return CustomResponse();
+        //    if (result == null)
+        //        return CustomResponse();
 
-            return CustomResponse(result);
-        }
+        //    return CustomResponse(result);
+        //}
 
-       
+
     }
 }
