@@ -23,9 +23,9 @@ public class AdministratorController : MainController
     [ProducesResponseType<ActionResult>(400)]
     [ProducesResponseType<ActionResult>(401)]
     [ProducesResponseType<ActionResult>(200)]
-    public async Task<ActionResult> View ([FromQuery] string id)
+    public async Task<ActionResult> View ([FromQuery] string email)
     {
-        var result = await _administratorService.ViewAdministrator(id);
+        var result = await _administratorService.ViewAdministrator(email);
         
         if (result.Success) return CustomResponse(result);
         
@@ -61,11 +61,11 @@ public class AdministratorController : MainController
     [ProducesResponseType<ActionResult>(400)]
     [ProducesResponseType<ActionResult>(401)]
     [ProducesResponseType<ActionResult>(200)]
-    public async Task<ActionResult> Update ([FromQuery] string id ,[FromBody] AdministratorUpdateVM request)
+    public async Task<ActionResult> Update ([FromQuery] string email ,[FromBody] AdministratorUpdateVM request)
     {
         if (!ModelState.IsValid) return CustomResponse(ModelState);
     
-        var result = await _administratorService.EditAdministrator(id, request);
+        var result = await _administratorService.EditAdministrator(email, request);
         
         if (result.Success) return CustomResponse(result);
         
@@ -81,9 +81,9 @@ public class AdministratorController : MainController
     [ProducesResponseType<ActionResult>(400)]
     [ProducesResponseType<ActionResult>(401)]
     [ProducesResponseType<ActionResult>(200)]
-    public async Task<ActionResult> Exclude ([FromQuery] string id)
+    public async Task<ActionResult> Exclude ([FromQuery] string email)
     {
-        var result = await _administratorService.ExcludeAdministrator(id);
+        var result = await _administratorService.ExcludeAdministrator(email);
         
         if (result.Success) return CustomResponse(result);
         

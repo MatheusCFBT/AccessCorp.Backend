@@ -66,26 +66,35 @@ namespace AccessCorpUsers.Application.Services
             return Result.Ok("Usuário cadastrado");
         }
 
-        public async Task<AdministratorVM> UpdateAdministrator(Guid id, AdministratorVM request)
+        public async Task<AdministratorVM> UpdateAdministrator(string email, AdministratorVM request)
         {
             if (!CpfValidation.Validate(request.Cpf) || !CepValidation.Validate(request.Cep))
                 return new AdministratorVM();
 
-            if (_administratorRepository.Find(a => a.Cpf == request.Cpf).Result.Any())
-                return new AdministratorVM();
+            AdministratorIdentityRequest identityRequest = new()
+            {
+                Email = request.Email,
+                Password = request.Password,
+                PasswordConfirmed = request.Password
+            };
 
             var admin = _mapper.Map<Administrator>(request);
+     
+            var resultRequest = await _identityApiClient.UpdateAdministratorAsync(email, identityRequest);
 
             await _administratorRepository.Update(admin);
-            // update na api de identity com client
 
             return request;
         }
 
-        public async Task<AdministratorVM> ExcludeAdministrator(Guid id)
+        public async Task<AdministratorVM> ExcludeAdministrator(string email)
         {
-            await _administratorRepository.Remove(id);
-            // excluir na api de identity com client
+            var admin = await _administratorRepository.GetAdminByEmail(email);
+            // TODO padronizar o response no application
+            var resultRequest = await _identityApiClient.ExcludeAdministratorAsync(email);
+            
+            // criar classes para cada request e voltar a fazer as requisições pelo Id
+            await _administratorRepository.Remove(admin.Id);
             return new AdministratorVM();
         }
 

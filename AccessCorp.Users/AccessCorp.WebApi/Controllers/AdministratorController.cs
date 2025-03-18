@@ -60,24 +60,24 @@ public class AdministratorController : MainController
         return CustomResponse();
     }
 
-    [HttpPut("{id}")]
-    public async Task<ActionResult> UpdateAdministrator(Guid id, AdministratorVM request)
+    [HttpPut("update")]
+    public async Task<ActionResult> UpdateAdministrator([FromQuery] string email, AdministratorVM request)
     {
-        if (id != request.Id)
-            return CustomResponse();
+        //if (id != request.Id)
+        //    return CustomResponse();
 
         if (!ModelState.IsValid)
             return CustomResponse(ModelState);
-        
-        var result = await _administratorService.UpdateAdministrator(id, request);
+
+        var result = await _administratorService.UpdateAdministrator(email, request);
 
         return CustomResponse(result);
     }
 
-    [HttpDelete("{id}")]
-    public async Task<ActionResult> ExcludeAdministrator(Guid id)
+    [HttpDelete("{email}")]
+    public async Task<ActionResult> ExcludeAdministrator(string email)
     {
-        var result = await _administratorService.ExcludeAdministrator(id);
+        var result = await _administratorService.ExcludeAdministrator(email);
 
         if (result == null)
             return CustomResponse();

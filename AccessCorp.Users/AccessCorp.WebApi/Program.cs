@@ -20,7 +20,7 @@ builder.Services.AddDbContext<AccessCorpUsersDbContext>(op =>
 builder.AddApiConfiguration()
     .AddJwtConfiguration()
     .AddSwaggerConfiguration();
-builder.Services.AddAutoMapper(typeof(Program));
+builder.Services.AddAutoMapper(typeof(AutomapperConfig));
 
 
 builder.Services.AddHttpContextAccessor();

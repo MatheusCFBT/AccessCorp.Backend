@@ -15,23 +15,23 @@ public class AdministratorService : IAdministratorService
         _signInManager = signInManager;
     }
     
-    public async Task<Result> ViewAdministrator(string id)
+    public async Task<Result> ViewAdministrator(string email)
     {
-        var user = await _userManager.FindByIdAsync(id);
+        var user = await _userManager.FindByEmailAsync(email);
         
         if (user == null) return Result.Fail("User not found");
 
         return Result.Ok(user);
     }
     
-    public async Task<Result> EditAdministrator(string id, AdministratorUpdateVM request)
+    public async Task<Result> EditAdministrator(string email, AdministratorUpdateVM request)
     {
         //TODO fazer validação
-        var user = await _userManager.FindByIdAsync(id);
+        var user = await _userManager.FindByEmailAsync(email);
         if (user == null) return Result.Fail("Usuário não encontrado");
 
         user.Email = request.Email;
-        user.UserName = request.UserName;
+        user.UserName = request.Email;
 
         if (!string.IsNullOrWhiteSpace(request.Password))
         {
@@ -59,9 +59,9 @@ public class AdministratorService : IAdministratorService
         return result.Succeeded ? Result.Ok("Usuário alterado com sucesso") : Result.Fail("Erro ao alterar usuário");
     }
 
-    public async Task<Result> ExcludeAdministrator(string id)
+    public async Task<Result> ExcludeAdministrator(string email)
     {
-        var user = await _userManager.FindByIdAsync(id);
+        var user = await _userManager.FindByEmailAsync(email);
         
         if (user == null) return Result.Fail("User not found");
         
