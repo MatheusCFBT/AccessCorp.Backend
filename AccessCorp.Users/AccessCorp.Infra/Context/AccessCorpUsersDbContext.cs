@@ -9,10 +9,10 @@ public class AccessCorpUsersDbContext : DbContext
     {
     }
 
-    public DbSet<Administrator> Administrators { get; set; }
-    public DbSet<Doorman> Doormans { get; set; }
-    public DbSet<Guest> Guests { get; set; }
-    public DbSet<Resident> Residents { get; set; }
+    public virtual DbSet<Administrator> Administrators { get; set; }
+    public virtual DbSet<Doorman> Doormans { get; set; }
+    public virtual DbSet<Guest> Guests { get; set; }
+    public virtual DbSet<Resident> Residents { get; set; }
     
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

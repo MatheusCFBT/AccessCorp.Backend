@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using AccessCorpUsers.Domain.Entities;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Security.Principal;
 
@@ -39,8 +40,8 @@ namespace AccessCorpUsers.Application.Entities
         [Required(ErrorMessage = "O campo {0} é obrigatório ")]
         [StringLength(40, MinimumLength = 6, ErrorMessage = "O campo {0} precisa ter entre {2} e {1} caracteres")]
         public string Password { get; set; }
-        public IEnumerable<DoormanVM> Doormans { get; set; }
-        public IEnumerable<ResidentVM> Residents { get; set; }
+        public IEnumerable<Doorman>? Doormans { get; set; }
+        public IEnumerable<Resident>? Residents { get; set; }
 
         [NotMapped]
         public Guid IdentityId { get; set; }

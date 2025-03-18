@@ -5,6 +5,8 @@ using AccessCorpUsers.Domain.Interfaces;
 using AccessCorpUsers.Infra.Context;
 using AccessCorpUsers.Infra.Repositories;
 using AccessCorpUsers.WebApi.Configuration;
+using AccessCorpUsers.WebApi.Extensions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
@@ -16,13 +18,14 @@ builder.Services.AddDbContext<AccessCorpUsersDbContext>(op =>
 
 
 builder.AddApiConfiguration()
+    .AddJwtConfiguration()
     .AddSwaggerConfiguration();
-builder.Services.AddAutoMapper(typeof(Program));
+builder.Services.AddAutoMapper(typeof(AutomapperConfig));
 
 
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.Configure<IdentityApiSettings>(builder.Configuration.GetSection("IdentityApi"));
-
 builder.Services.AddScoped<IAdministratorRepository, AdministratorRepository>();
 builder.Services.AddScoped<IAdministratorService, AdministratorService>();
 builder.Services.AddHttpClient<IIdentityApiClient, IdentityApiClient>();

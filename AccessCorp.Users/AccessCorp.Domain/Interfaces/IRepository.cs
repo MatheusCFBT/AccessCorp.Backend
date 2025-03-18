@@ -18,7 +18,7 @@ namespace AccessCorpUsers.Domain.Interfaces
 
         Task Update(TEntity entity);
 
-        Task Remove(Guid id);
+        Task Remove(Guid Id);
 
         Task<IEnumerable<TEntity>> Find(Expression<Func<TEntity, bool>> predicate);
 

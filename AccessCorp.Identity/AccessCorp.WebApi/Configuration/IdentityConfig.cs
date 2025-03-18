@@ -70,7 +70,7 @@ public static class IdentityConfig
     public static WebApplication UseIdentityConfiguration(this WebApplication app)
     {
         app.UseAuthentication();
-        app.UseAuthentication();
+        app.UseAuthorization();
         
         return app;
     }

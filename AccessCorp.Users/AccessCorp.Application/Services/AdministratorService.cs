@@ -19,7 +19,7 @@ namespace AccessCorpUsers.Application.Services
             _identityApiClient = client;
             _mapper = mapper;
         }
-        public async Task<List<AdministratorVM>> ViewAllAdministrators(string email)
+        public async Task<Result> ViewAllAdministrators(string email)
         {
             var requestAdmin = await _administratorRepository.GetAdminByEmail(email);
 
@@ -27,7 +27,7 @@ namespace AccessCorpUsers.Application.Services
 
             var adminVM = _mapper.Map<List<AdministratorVM>>(administrators);
 
-            return adminVM;
+            return Result.Ok(adminVM);
         }
 
         public async Task<AdministratorVM> ViewAdministratorById(Guid id)
@@ -39,53 +39,62 @@ namespace AccessCorpUsers.Application.Services
             return adminVM;
         }
 
-        public async Task<AdministratorVM> RegisterAdministrator(AdministratorVM request)
+        public async Task<Result> RegisterAdministrator(AdministratorVM request)
         {
             if (!CpfValidation.Validate(request.Cpf) || !CepValidation.Validate(request.Cep))
-                return new AdministratorVM();
+                return Result.Fail("CPF ou CEP inválidos");
 
             if (_administratorRepository.Find(a => a.Cpf == request.Cpf).Result.Any())
-                return new AdministratorVM();
+                return Result.Fail("Já existe um adminstrador com esse CPF");
 
             AdministratorIdentityRequest identityRequest = new()
             {
-                Email = request.Cpf,
+                Email = request.Email,
                 Password = request.Password,
                 PasswordConfirmed = request.Password
             };
 
             var resultRequest = await _identityApiClient.RegisterAdministratorAsync(identityRequest);
 
-            if (resultRequest == null)
-                return new AdministratorVM();
+            if (!resultRequest.IsSuccessStatusCode)
+                return Result.Fail($"Erro, {resultRequest.Content}");
 
             var admin = _mapper.Map<Administrator>(request);
 
             await _administratorRepository.Add(admin);
 
-            return request;
+            return Result.Ok("Usuário cadastrado");
         }
 
-        public async Task<AdministratorVM> UpdateAdministrator(Guid id, AdministratorVM request)
+        public async Task<AdministratorVM> UpdateAdministrator(string email, AdministratorVM request)
         {
             if (!CpfValidation.Validate(request.Cpf) || !CepValidation.Validate(request.Cep))
                 return new AdministratorVM();
 
-            if (_administratorRepository.Find(a => a.Cpf == request.Cpf).Result.Any())
-                return new AdministratorVM();
+            AdministratorIdentityRequest identityRequest = new()
+            {
+                Email = request.Email,
+                Password = request.Password,
+                PasswordConfirmed = request.Password
+            };
 
             var admin = _mapper.Map<Administrator>(request);
+     
+            var resultRequest = await _identityApiClient.UpdateAdministratorAsync(email, identityRequest);
 
             await _administratorRepository.Update(admin);
-            // update na api de identity com client
 
             return request;
         }
 
-        public async Task<AdministratorVM> ExcludeAdministrator(Guid id)
+        public async Task<AdministratorVM> ExcludeAdministrator(string email)
         {
-            await _administratorRepository.Remove(id);
-            // excluir na api de identity com client
+            var admin = await _administratorRepository.GetAdminByEmail(email);
+            // TODO padronizar o response no application
+            var resultRequest = await _identityApiClient.ExcludeAdministratorAsync(email);
+            
+            // criar classes para cada request e voltar a fazer as requisições pelo Id
+            await _administratorRepository.Remove(admin.Id);
             return new AdministratorVM();
         }
 

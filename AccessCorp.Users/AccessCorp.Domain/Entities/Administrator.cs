@@ -12,5 +12,5 @@ public class Administrator : Entity
     public string Password { get; set; }
     public IEnumerable<Doorman>? Doormans { get; set; }
     public IEnumerable<Resident>? Residents { get; set; }
-    public Guid IdentityId { get; set; }
+    public Guid IdentityId { get; set; } = Guid.NewGuid();
 }

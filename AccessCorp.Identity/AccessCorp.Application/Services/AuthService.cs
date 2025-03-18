@@ -40,9 +40,6 @@ public class AuthService : IAuthService
 
     public async Task<Result> LoginAdministrator(AdministratorLoginVM request)
     {
-        if (!ValidateCep(request.Cep))
-            return Result.Fail("Invalid Cep");
-
         if (!await _userClaimsService.HasAdmimClaims(request.Email)) return Result.Fail("Usuário ou Senha incorretos");
        
         var result = await _signInManager.PasswordSignInAsync(request.Email, request.Password, false, true);
@@ -55,9 +52,6 @@ public class AuthService : IAuthService
 
     public async Task<Result> RegisterAdministrator(AdministratorRegisterVM request)
     {
-        if (!ValidateCep(request.Cep))
-            return Result.Fail("Invalid Cep");
-        
         var user = new IdentityUser
         {
             UserName = request.Email,
@@ -101,10 +95,7 @@ public class AuthService : IAuthService
     }
 
     public async Task<Result> ResetPasswordAdministrator(AdministratorResetPasswordVM request)
-    {
-        if (!ValidateCep(request.Cep))
-            return Result.Fail("Invalid Cep");
-        
+    {      
         var user = await _userManager.FindByEmailAsync(request.Email);
         
         if (user == null) return Result.Fail("Usuario incorreto");

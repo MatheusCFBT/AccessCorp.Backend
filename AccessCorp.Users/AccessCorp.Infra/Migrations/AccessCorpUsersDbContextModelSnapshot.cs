@@ -73,6 +73,9 @@ namespace AccessCorpUsers.Infra.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("AdministratorId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Cep")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -96,11 +99,17 @@ namespace AccessCorpUsers.Infra.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Phone")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AdministratorId");
 
                     b.ToTable("Doormans");
                 });
@@ -114,6 +123,9 @@ namespace AccessCorpUsers.Infra.Migrations
                     b.Property<string>("Cpf")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("DoormanId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -133,6 +145,8 @@ namespace AccessCorpUsers.Infra.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("DoormanId");
+
                     b.ToTable("Guests");
                 });
 
@@ -140,6 +154,9 @@ namespace AccessCorpUsers.Infra.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("AdministratorId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Cep")
@@ -171,7 +188,42 @@ namespace AccessCorpUsers.Infra.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AdministratorId");
+
                     b.ToTable("Residents");
+                });
+
+            modelBuilder.Entity("AccessCorpUsers.Domain.Entities.Doorman", b =>
+                {
+                    b.HasOne("AccessCorpUsers.Domain.Entities.Administrator", null)
+                        .WithMany("Doormans")
+                        .HasForeignKey("AdministratorId");
+                });
+
+            modelBuilder.Entity("AccessCorpUsers.Domain.Entities.Guest", b =>
+                {
+                    b.HasOne("AccessCorpUsers.Domain.Entities.Doorman", null)
+                        .WithMany("Guests")
+                        .HasForeignKey("DoormanId");
+                });
+
+            modelBuilder.Entity("AccessCorpUsers.Domain.Entities.Resident", b =>
+                {
+                    b.HasOne("AccessCorpUsers.Domain.Entities.Administrator", null)
+                        .WithMany("Residents")
+                        .HasForeignKey("AdministratorId");
+                });
+
+            modelBuilder.Entity("AccessCorpUsers.Domain.Entities.Administrator", b =>
+                {
+                    b.Navigation("Doormans");
+
+                    b.Navigation("Residents");
+                });
+
+            modelBuilder.Entity("AccessCorpUsers.Domain.Entities.Doorman", b =>
+                {
+                    b.Navigation("Guests");
                 });
 #pragma warning restore 612, 618
         }

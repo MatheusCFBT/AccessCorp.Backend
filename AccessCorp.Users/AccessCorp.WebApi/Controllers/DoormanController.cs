@@ -1,16 +1,13 @@
 ﻿using AccessCorpUsers.Application.Entities;
 using AccessCorpUsers.Application.Interfaces;
-using AccessCorpUsers.Application.Services;
+using AccessCorpUsers.WebApi.Extensions;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Newtonsoft.Json;
-using System.Security.Claims;
 
 namespace AccessCorpUsers.WebApi.Controllers
 {
     [ApiVersion("1.0")]
-    [Route("users/v1/doorman")]
+    [ClaimsAuthorize("Permission", "LimitedAccess"), Route("users/v1/doorman")]
     public class DoormanController : MainController
     {
         private readonly IDoormanService _doormanService;
