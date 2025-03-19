@@ -53,9 +53,9 @@ public class DoormanService : IDoormanService
         return Result.Ok(await _jwtService.GenerateJWTAdmin(user.Email));
     }
     
-    public async Task<Result> EditDoorman(string id, DoormanUpdateVM request)
+    public async Task<Result> EditDoorman(string email, DoormanUpdateVM request)
     {
-        var user = await _userManager.FindByIdAsync(id);
+        var user = await _userManager.FindByEmailAsync(email);
         if (user == null) return Result.Fail("Usuário não encontrado");
 
         user.Email = request.Email;
@@ -88,9 +88,9 @@ public class DoormanService : IDoormanService
         
     }
 
-    public async Task<Result> ExcludeDoorman(string id)
+    public async Task<Result> ExcludeDoorman(string email)
     {
-        var user = await _userManager.FindByIdAsync(id);
+        var user = await _userManager.FindByEmailAsync(email);
         
         if (user == null) return Result.Fail("User not found");
         

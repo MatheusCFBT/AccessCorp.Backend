@@ -14,5 +14,12 @@ namespace AccessCorpUsers.Infra.Repositories
         {
             return await Find(d => d.Cep == cep);
         }
+
+        public async Task<Doorman> GetDoormanByEmail(string email)
+        {
+            var doorman = await Find(d => d.Email == email);
+
+            return doorman.FirstOrDefault();
+        }
     }
 }

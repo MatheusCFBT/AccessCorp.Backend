@@ -14,11 +14,15 @@ public class AdministratorController : MainController
 {
     private readonly IResidentService _residentService;
     private readonly IAdministratorService _administratorService;
+    private readonly IDoormanService _doormanService;
 
-    public AdministratorController(IAdministratorService administratorService, IResidentService residentService)
+    public AdministratorController(IAdministratorService administratorService, 
+                                   IResidentService residentService, 
+                                   IDoormanService doormanService)
     {
         _administratorService = administratorService;
         _residentService = residentService;
+        _doormanService = doormanService;
     }
 
     //TODO
@@ -51,7 +55,7 @@ public class AdministratorController : MainController
     [HttpPost("register")]
     public async Task<ActionResult> RegisterAdministrator(AdministratorVM request)
     {
-        if (!ModelState.IsValid) 
+        if (!ModelState.IsValid)
             return CustomResponse(ModelState);
 
         var result = await _administratorService.RegisterAdministrator(request);
@@ -102,6 +106,7 @@ public class AdministratorController : MainController
         return CustomResponse();
     }
 
+    #region Resident Actions
     [HttpGet("view-all-residents")]
     public async Task<ActionResult<List<ResidentVM>>> ViewAllResidents()
     {
@@ -176,6 +181,8 @@ public class AdministratorController : MainController
         return CustomResponse();
     }
 
+    #endregion
+
     [HttpGet("view-all")]
     public async Task<ActionResult> ViewAllUsersByAdmin()
     {
@@ -190,4 +197,67 @@ public class AdministratorController : MainController
 
         return CustomResponse(ModelState);
     }
+
+    #region Doorman Actions
+    [HttpGet("view-all-doorman")]
+    public async Task<ActionResult<List<DoormanVM>>> ViewAllDoorman()
+    {
+        var userId = GetUserId(HttpContext.User);
+
+        var result = await _doormanService.ViewAllDoorman(userId.email);
+
+        if (result == null)
+            return CustomResponse();
+
+        return CustomResponse(result);
+    }
+
+    [HttpGet("view-doorman/{id}")]
+    public async Task<ActionResult<DoormanVM>> ViewDoormanById(Guid id)
+    {
+        var result = await _doormanService.ViewDoormanById(id);
+
+        if (result == null)
+            return CustomResponse();
+
+        return CustomResponse(result);
+    }
+
+    [HttpPost("register-doorman")]
+    public async Task<ActionResult> RegisterDoorman(DoormanVM request)
+    {
+        if (!ModelState.IsValid)
+            return CustomResponse(ModelState);
+
+        var result = await _doormanService.RegisterDoorman(request);
+
+        return CustomResponse(result);
+    }
+
+    [HttpPut("update-doorman/{email}")]
+    public async Task<ActionResult> UpdateDoorman(string email, DoormanVM request)
+    {
+        //if (id != request.Id)
+        //    return CustomResponse();
+
+        if (!ModelState.IsValid)
+            return CustomResponse(ModelState);
+
+        var result = await _doormanService.UpdateDoorman(email, request);
+
+        return CustomResponse(result);
+    }
+
+    [HttpDelete("exclude-doorman/{email}")]
+    public async Task<ActionResult> DeleteDoorman(string email)
+    {
+        var result = await _doormanService.ExcludeDoorman(email);
+
+        if (result == null)
+            return CustomResponse();
+
+        return CustomResponse(result);
+    }
+
+    #endregion
 }

@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AccessCorp.WebApi.Controllers;
 
-    [ApiVersion("1.0")]
+[ApiVersion("1.0")]
 [Authorize("AdminPolicy"), Route("identity/v1/doorman")]
 public class DoormanController : MainController
 {
@@ -59,11 +59,11 @@ public class DoormanController : MainController
     [ProducesResponseType<ActionResult>(400)]
     [ProducesResponseType<ActionResult>(401)]
     [ProducesResponseType<ActionResult>(200)]
-    public async Task<ActionResult> Update ([FromQuery] string id ,[FromBody] DoormanUpdateVM request)
+    public async Task<ActionResult> Update ([FromQuery] string email ,[FromBody] DoormanUpdateVM request)
     {
         if (!ModelState.IsValid) return CustomResponse(ModelState);
     
-        var result = await _doormanService.EditDoorman(id, request);
+        var result = await _doormanService.EditDoorman(email, request);
         
         if (result.Success) return CustomResponse(result);
         
@@ -79,9 +79,9 @@ public class DoormanController : MainController
     [ProducesResponseType<ActionResult>(400)]
     [ProducesResponseType<ActionResult>(401)]
     [ProducesResponseType<ActionResult>(200)]
-    public async Task<ActionResult> Exclude ([FromQuery] string id)
+    public async Task<ActionResult> Exclude ([FromQuery] string email)
     {
-        var result = await _doormanService.ExcludeDoorman(id);
+        var result = await _doormanService.ExcludeDoorman(email);
         
         if (result.Success) return CustomResponse(result);
         

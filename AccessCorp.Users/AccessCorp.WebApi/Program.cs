@@ -28,6 +28,8 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.Configure<IdentityApiSettings>(builder.Configuration.GetSection("IdentityApi"));
 builder.Services.AddScoped<IAdministratorRepository, AdministratorRepository>();
 builder.Services.AddScoped<IAdministratorService, AdministratorService>();
+builder.Services.AddScoped<IDoormanRepository, DoormanRepository>();
+builder.Services.AddScoped<IDoormanService, DoormanService>();
 builder.Services.AddHttpClient<IIdentityApiClient, IdentityApiClient>();
 builder.Services.AddScoped<IResidentRepository, ResidentRepository>();
 builder.Services.AddScoped<IResidentService, ResidentService>();
