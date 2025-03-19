@@ -11,23 +11,30 @@ namespace AccessCorpUsers.Application.Services
     public class DoormanService : IDoormanService
     {
         private readonly IDoormanRepository _doormanRepository;
+        private readonly IAdministratorRepository _administratorRepository;
         private readonly IMapper _mapper;
         private readonly IIdentityApiClient _identityApiClient;
 
-        public DoormanService(IDoormanRepository doormanRepository, IMapper mapper, IIdentityApiClient identityApiClient)
+        public DoormanService(IDoormanRepository doormanRepository,
+                              IAdministratorRepository administratorRepository,
+                              IMapper mapper,
+                              IIdentityApiClient identityApiClient)
         {
             _doormanRepository = doormanRepository;
+            _administratorRepository = administratorRepository;
             _mapper = mapper;
             _identityApiClient = identityApiClient;
         }
 
-        public async Task<List<DoormanVM>> ViewAllDoorman()
+        public async Task<Result> ViewAllDoorman(string email)
         {
-            var doorman = await _doormanRepository.GetAll();
+            var requestAdmin = await _administratorRepository.GetAdminByEmail(email);
 
-            var doormanVM = _mapper.Map<List<DoormanVM>>(doorman);
+            var doormans = await _doormanRepository.GetDoormanByCep(requestAdmin.Cep);
 
-            return doormanVM;
+            var doormanVM = _mapper.Map<List<DoormanVM>>(doormans);
+
+            return Result.Ok(doormanVM);
         }
 
         public async Task<DoormanVM> ViewDoormanById(Guid id)
@@ -39,55 +46,62 @@ namespace AccessCorpUsers.Application.Services
             return doormanVM;
         }
         
-        public async Task<DoormanVM> RegisterDoorman(DoormanVM request)
+        public async Task<Result> RegisterDoorman(DoormanVM request)
         {
             if (!CpfValidation.Validate(request.Cpf) || !CepValidation.Validate(request.Cep))
-                return new DoormanVM();
+                return Result.Fail("CPF ou CEP inválidos");
 
             if (_doormanRepository.Find(a => a.Cpf == request.Cpf).Result.Any())
-                return new DoormanVM();
+                return Result.Fail("Já existe um adminstrador com esse CPF");
 
-            AdministratorIdentityRequest identityRequest = new()
+            DoormanIdentityRequest identityRequest = new()
             {
-                Email = request.Cpf,
+                Email = request.Email,
                 Password = request.Password,
                 PasswordConfirmed = request.Password
             };
 
-            // TODO
-            // Criar metodo para doorman no apiIdentity
-            var resultRequest = await _identityApiClient.RegisterAdministratorAsync(identityRequest);
+            var resultRequest = await _identityApiClient.RegisterDoormanAsync(identityRequest);
 
-            if (resultRequest == null)
-                return new DoormanVM();
+            if (!resultRequest.IsSuccessStatusCode)
+                return Result.Fail($"Erro, {resultRequest.Content}");
 
             var doorman = _mapper.Map<Doorman>(request);
 
             await _doormanRepository.Add(doorman);
 
-            return request;
+            return Result.Ok("Usuário cadastrado");
         }
 
-        public async Task<DoormanVM> UpdateDoorman(Guid id, DoormanVM request)
+        public async Task<Result> UpdateDoorman(string email, DoormanVM request)
         {
             if (!CpfValidation.Validate(request.Cpf) || !CepValidation.Validate(request.Cep))
-                return new DoormanVM();
+                return Result.Fail("CPF ou CEP inválidos");
 
-            if (_doormanRepository.Find(a => a.Cpf == request.Cpf).Result.Any())
-                return new DoormanVM();
+            DoormanIdentityRequest identityRequest = new()
+            {
+                Email = request.Email,
+                Password = request.Password,
+                PasswordConfirmed = request.Password
+            };
 
             var doorman = _mapper.Map<Doorman>(request);
 
-            await _doormanRepository.Update(doorman);
-            // update na api de identity com client
+            var resultRequest = await _identityApiClient.UpdateDoormanAsync(email, identityRequest);
 
-            return request;
+            await _doormanRepository.Update(doorman);
+
+            return Result.Ok("Usuário alterado");
         }
-        public async Task<DoormanVM> ExcludeDoorman(Guid id)
+        public async Task<Result> ExcludeDoorman(string email)
         {
-            await _doormanRepository.Remove(id);
-            // excluir na api de identity com client
-            return new DoormanVM();
+            var doorman = await _doormanRepository.GetDoormanByEmail(email);
+
+            var resultRequest = await _identityApiClient.ExcludeDoormanAsync(email);
+
+            await _doormanRepository.Remove(doorman.Id);
+
+            return Result.Ok("Usúario deletado");
         }
     }
 }

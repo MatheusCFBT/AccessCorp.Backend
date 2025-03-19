@@ -107,9 +107,6 @@ public class AuthService : IAuthService
 
     public async Task<Result> LoginDoorman(DoormanLoginVM request)
     {
-        if (!ValidateCep(request.Cep))
-            return Result.Fail("Invalid Cep");
-
         if (!await _userClaimsService.HasDoormanClaims(request.Email))
             return Result.Fail("Usuário ou Senha incorretos");
         

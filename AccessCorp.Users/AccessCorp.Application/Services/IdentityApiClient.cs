@@ -7,6 +7,8 @@ using System.Text.Json;
 using System.Text;
 using Microsoft.AspNetCore.Http;
 using System.Net.Http.Headers;
+using Microsoft.Win32;
+using System.Security.Principal;
 
 namespace AccessCorpUsers.Application.Services;
 
@@ -100,6 +102,65 @@ public class IdentityApiClient : IIdentityApiClient
 
         return result;
     }
+
+    public Task<AdministratorResponse> ViewDoormanByEmailAsync(string email)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<HttpResponseMessage> RegisterDoormanAsync(DoormanIdentityRequest requestIdentity)
+    {
+        var jsonContent = JsonSerializer.Serialize(requestIdentity);
+        var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+        AddHeaders();
+
+        var result = await _httpClient.PostAsync($"/identity/v1/doorman/register-doorman", content);
+
+        if (!result.IsSuccessStatusCode)
+        {
+            string errorResponse = await result.Content.ReadAsStringAsync();
+            Console.WriteLine($"Erro {result.StatusCode}: {errorResponse}");
+            throw new Exception($"Erro na requisição: {result.StatusCode} - {errorResponse}");
+        }
+
+        return result;
+    }
+
+    public async Task<HttpResponseMessage> UpdateDoormanAsync(string email, DoormanIdentityRequest requestIdentity)
+    {
+        var jsonContent = JsonSerializer.Serialize(requestIdentity);
+        var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+        AddHeaders();
+
+        var result = await _httpClient.PutAsync($"/identity/v1/doorman/update-doorman?email={email}", content);
+
+        if (!result.IsSuccessStatusCode)
+        {
+            string errorResponse = await result.Content.ReadAsStringAsync();
+            Console.WriteLine($"Erro {result.StatusCode}: {errorResponse}");
+            throw new Exception($"Erro na requisição: {result.StatusCode} - {errorResponse}");
+        }
+
+        return result;
+    }
+
+    public async Task<HttpResponseMessage> ExcludeDoormanAsync(string email)
+    {
+        AddHeaders();
+        var result = await _httpClient.DeleteAsync($"/identity/v1/doorman/exclude-doorman?email={email}");
+
+        if (!result.IsSuccessStatusCode)
+        {
+            string errorResponse = await result.Content.ReadAsStringAsync();
+            Console.WriteLine($"Erro {result.StatusCode}: {errorResponse}");
+            throw new Exception($"Erro na requisição: {result.StatusCode} - {errorResponse}");
+        }
+
+        return result;
+    }
+
 
     private void AddHeaders()
     {
