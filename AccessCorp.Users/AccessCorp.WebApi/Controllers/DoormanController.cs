@@ -1,6 +1,5 @@
 ﻿using AccessCorpUsers.Application.Entities;
 using AccessCorpUsers.Application.Interfaces;
-using AccessCorpUsers.Application.Services;
 using AccessCorpUsers.WebApi.Extensions;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
@@ -8,75 +7,73 @@ using Microsoft.AspNetCore.Mvc;
 namespace AccessCorpUsers.WebApi.Controllers
 {
     [ApiVersion("1.0")]
-    [ClaimsAuthorize("Permission", "LimitedAccess"), Route("users/v1/doorman")]
+    [ClaimsAuthorize("Permission", "FullAccess"), Route("users/v1/doorman")]
     public class DoormanController : MainController
     {
         private readonly IDoormanService _doormanService;
-        private readonly IResidentService _residentService;
         public DoormanController(IDoormanService doormanService, IResidentService residentService)
         {
             _doormanService = doormanService;
-            _residentService = residentService;
         }
 
-        //[HttpGet("view-all")]
-        //public async Task<ActionResult<List<DoormanVM>>> ViewAllDoorman()
-        //{
-        //    var result = await _doormanService.ViewAllDoorman();
+        [HttpGet("view-all")]
+        public async Task<ActionResult<List<DoormanVM>>> GetAllDoorman()
+        {
+            var userId = GetUserId(HttpContext.User);
 
-        //    if (result == null)
-        //        return CustomResponse();
+            var result = await _doormanService.ViewAllDoorman(userId.email);
 
-        //    return CustomResponse(result);
-        //}
+            if (result == null)
+                return CustomResponse();
 
-        //[HttpGet("{id}")]
-        //public async Task<ActionResult<DoormanVM>> ViewDoormanById(Guid id)
-        //{
-        //    var result = await _doormanService.ViewDoormanById(id);
+            return CustomResponse(result);
+        }
 
-        //    if (result == null)
-        //        return CustomResponse();
+        [HttpGet("view/{id}")]
+        public async Task<ActionResult<DoormanVM>> GetDoormanById(Guid id)
+        {
+            var result = await _doormanService.ViewDoormanById(id);
 
-        //    return CustomResponse(result);
-        //}
+            if (result == null)
+                return CustomResponse();
 
-        //[HttpPost("register")]
-        //public async Task<ActionResult> RegisterDoorman(DoormanVM request)
-        //{
-        //    if (!ModelState.IsValid)
-        //        return CustomResponse(ModelState);
+            return CustomResponse(result);
+        }
 
-        //    var result = await _doormanService.RegisterDoorman(request);
+        [HttpPost("register")]
+        public async Task<ActionResult> PostDoorman([FromBody] DoormanVM request)
+        {
+            if (!ModelState.IsValid)
+                return CustomResponse(ModelState);
 
-        //    return CustomResponse(result);
-        //}
+            var result = await _doormanService.RegisterDoorman(request);
 
-        //[HttpPut("{id}")]
-        //public async Task<ActionResult> UpdateDoorman(Guid id,DoormanVM request)
-        //{
-        //    if (id != request.Id)
-        //        return CustomResponse();
+            return CustomResponse(result);
+        }
 
-        //    if (!ModelState.IsValid)
-        //        return CustomResponse(ModelState);
+        [HttpPut("update/{email}")]
+        public async Task<ActionResult> PutDoorman(string email, [FromBody] DoormanVM request)
+        {
+            //if (id != request.Id)
+            //    return CustomResponse();
 
-        //    var result = await _doormanService.UpdateDoorman(id, request);
+            if (!ModelState.IsValid)
+                return CustomResponse(ModelState);
 
-        //    return CustomResponse(result);
-        //}
+            var result = await _doormanService.UpdateDoorman(email, request);
 
-        //[HttpDelete("{id}")]
-        //public async Task<ActionResult> DeleteDoorman(Guid id)
-        //{
-        //    var result = await _doormanService.ExcludeDoorman(id);
+            return CustomResponse(result);
+        }
 
-        //    if (result == null)
-        //        return CustomResponse();
+        [HttpDelete("exclude/{email}")]
+        public async Task<ActionResult> DeleteDoorman(string email)
+        {
+            var result = await _doormanService.ExcludeDoorman(email);
 
-        //    return CustomResponse(result);
-        //}
+            if (result == null)
+                return CustomResponse();
 
-
+            return CustomResponse(result);
+        }
     }
 }

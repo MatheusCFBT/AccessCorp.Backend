@@ -31,7 +31,7 @@ public class IdentityApiClient : IIdentityApiClient
     {
         AddHeaders();
 
-        var result = await _httpClient.GetAsync($"identity/v1/administrator/view-administrator?email={email}");
+        var result = await _httpClient.GetAsync($"identity/v1/administrator/view/{email}");
        
         if (!result.IsSuccessStatusCode)
         {
@@ -57,7 +57,7 @@ public class IdentityApiClient : IIdentityApiClient
 
         AddHeaders();
 
-        var result = await _httpClient.PostAsync($"identity/v1/administrator/register-administrator", content);
+        var result = await _httpClient.PostAsync($"identity/v1/administrator/register", content);
 
         if (!result.IsSuccessStatusCode)
         {
@@ -76,7 +76,7 @@ public class IdentityApiClient : IIdentityApiClient
 
         AddHeaders();
 
-        var result = await _httpClient.PutAsync($"identity/v1/administrator/update-administrator?email={email}", content);
+        var result = await _httpClient.PutAsync($"identity/v1/administrator/update/{email}", content);
 
         if (!result.IsSuccessStatusCode)
         {
@@ -91,7 +91,7 @@ public class IdentityApiClient : IIdentityApiClient
     public async Task<HttpResponseMessage> ExcludeAdministratorAsync(string email)
     {
         AddHeaders();
-        var result = await _httpClient.DeleteAsync($"/identity/v1/administrator/exclude-administrator?email={email}");
+        var result = await _httpClient.DeleteAsync($"/identity/v1/administrator/exclude/{email}");
 
         if (!result.IsSuccessStatusCode)
         {
@@ -115,7 +115,7 @@ public class IdentityApiClient : IIdentityApiClient
 
         AddHeaders();
 
-        var result = await _httpClient.PostAsync($"/identity/v1/doorman/register-doorman", content);
+        var result = await _httpClient.PostAsync($"/identity/v1/doorman/register", content);
 
         if (!result.IsSuccessStatusCode)
         {
@@ -134,7 +134,7 @@ public class IdentityApiClient : IIdentityApiClient
 
         AddHeaders();
 
-        var result = await _httpClient.PutAsync($"/identity/v1/doorman/update-doorman?email={email}", content);
+        var result = await _httpClient.PutAsync($"/identity/v1/doorman/update/{email}", content);
 
         if (!result.IsSuccessStatusCode)
         {
@@ -149,7 +149,7 @@ public class IdentityApiClient : IIdentityApiClient
     public async Task<HttpResponseMessage> ExcludeDoormanAsync(string email)
     {
         AddHeaders();
-        var result = await _httpClient.DeleteAsync($"/identity/v1/doorman/exclude-doorman?email={email}");
+        var result = await _httpClient.DeleteAsync($"/identity/v1/doorman/exclude/{email}");
 
         if (!result.IsSuccessStatusCode)
         {

@@ -7,21 +7,21 @@ using Microsoft.AspNetCore.Mvc;
 namespace AccessCorpUsers.WebApi.Controllers
 {
     [ApiVersion("1.0")]
-    [ClaimsAuthorize("Permission", "LimitedAccess"), Route("users/v1/guests")]
-    public class GuestController : MainController
+    [ClaimsAuthorize("Permission", "FullAccess"), Route("users/v1/residents")]
+    public class ResidentsController : MainController
     {
-        private readonly IGuestService _guestService;
+        private readonly IResidentService _residentService;
 
-        public GuestController(IGuestService guestService)
+        public ResidentsController(IResidentService residentService)
         {
-            _guestService = guestService;
+            _residentService = residentService;
         }
 
         [HttpGet("view-all")]
-        public async Task<ActionResult<GuestVM>> ViewAllGuest()
+        public async Task<ActionResult<List<ResidentVM>>> GetAllResidents()
         {
             var userId = GetUserId(HttpContext.User);
-            var result = await _guestService.ViewAllGuests(userId.email);
+            var result = await _residentService.ViewAllResidents(userId.email);
 
             if (result == null)
                 return CustomResponse();
@@ -30,9 +30,9 @@ namespace AccessCorpUsers.WebApi.Controllers
         }
 
         [HttpGet("view/{id}")]
-        public async Task<ActionResult<GuestVM>> ViewGuestById(Guid id)
+        public async Task<ActionResult<ResidentVM>> GetResidentById(Guid id)
         {
-            var result = await _guestService.ViewGuestById(id);
+            var result = await _residentService.ViewResidentById(id);
 
             if (result == null)
                 return CustomResponse();
@@ -41,12 +41,12 @@ namespace AccessCorpUsers.WebApi.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<ActionResult<GuestVM>> RegisterGuest([FromBody] GuestVM request)
+        public async Task<ActionResult<ResidentVM>> PostResident([FromBody] ResidentVM request)
         {
             if (!ModelState.IsValid)
                 return CustomResponse(ModelState);
 
-            var result = await _guestService.RegisterGuest(request);
+            var result = await _residentService.RegisterResident(request);
 
             if (result.Success) return CustomResponse(result);
 
@@ -59,12 +59,12 @@ namespace AccessCorpUsers.WebApi.Controllers
         }
 
         [HttpPut("update/{email}")]
-        public async Task<ActionResult<GuestVM>> UpdateGuest(string email, [FromBody] GuestVM request)
+        public async Task<ActionResult<ResidentVM>> PutResident(string email, [FromBody] ResidentVM request)
         {
             if (!ModelState.IsValid)
                 return CustomResponse(ModelState);
 
-            var result = await _guestService.UpdateGuest(email, request);
+            var result = await _residentService.UpdateResident(email, request);
 
             if (result.Success) return CustomResponse(result);
 
@@ -77,24 +77,9 @@ namespace AccessCorpUsers.WebApi.Controllers
         }
 
         [HttpDelete("exclude/{email}")]
-        public async Task<ActionResult<GuestVM>> ExcludeGuest(string email)
+        public async Task<ActionResult<ResidentVM>> DeleteResident(string email)
         {
-            var result = await _guestService.ExcludeGuest(email);
-
-            if (result.Success) return CustomResponse(result);
-
-            foreach (var error in result.Errors)
-            {
-                AddErrorProcess(error);
-            }
-
-            return CustomResponse();
-        }
-
-        [HttpGet("{email}/new-qrcode")]
-        public async Task<ActionResult> GenerateQrCode(string email)
-        {
-            var result = await _guestService.GenerateQrCodeForGuest(email);
+            var result = await _residentService.ExcludeResident(email);
 
             if (result.Success) return CustomResponse(result);
 

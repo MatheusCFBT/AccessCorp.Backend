@@ -17,11 +17,11 @@ public class DoormanController : MainController
         _doormanService = doormanService;
     }
 
-    [HttpGet("view-doorman")]
+    [HttpGet("view/{id}")]
     [ProducesResponseType<ActionResult>(400)]
     [ProducesResponseType<ActionResult>(401)]
     [ProducesResponseType<ActionResult>(200)]
-    public async Task<ActionResult> View ([FromQuery] string id)
+    public async Task<ActionResult> GetDoormanById(string id)
     {
         var result = await _doormanService.ViewDoorman(id);
         
@@ -35,11 +35,11 @@ public class DoormanController : MainController
         return CustomResponse();
     }
     
-    [HttpPost("register-doorman")]
+    [HttpPost("register")]
     [ProducesResponseType<ActionResult>(400)]
     [ProducesResponseType<ActionResult>(401)]
     [ProducesResponseType<ActionResult>(200)]
-    public async Task<ActionResult> Register ([FromBody] DoormanRegisterVM request)
+    public async Task<ActionResult> PostDoorman([FromBody] DoormanRegisterVM request)
     {
         if (!ModelState.IsValid) return CustomResponse(ModelState);
     
@@ -55,11 +55,11 @@ public class DoormanController : MainController
         return CustomResponse();
     }
     
-    [HttpPut("update-doorman")]
+    [HttpPut("update/{email}")]
     [ProducesResponseType<ActionResult>(400)]
     [ProducesResponseType<ActionResult>(401)]
     [ProducesResponseType<ActionResult>(200)]
-    public async Task<ActionResult> Update ([FromQuery] string email ,[FromBody] DoormanUpdateVM request)
+    public async Task<ActionResult> PutDoorman(string email ,[FromBody] DoormanUpdateVM request)
     {
         if (!ModelState.IsValid) return CustomResponse(ModelState);
     
@@ -75,11 +75,11 @@ public class DoormanController : MainController
         return CustomResponse();
     }
     
-    [HttpDelete("exclude-doorman")]
+    [HttpDelete("exclude/{email}")]
     [ProducesResponseType<ActionResult>(400)]
     [ProducesResponseType<ActionResult>(401)]
     [ProducesResponseType<ActionResult>(200)]
-    public async Task<ActionResult> Exclude ([FromQuery] string email)
+    public async Task<ActionResult> DeleteDoorman(string email)
     {
         var result = await _doormanService.ExcludeDoorman(email);
         

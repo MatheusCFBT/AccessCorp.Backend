@@ -1,7 +1,5 @@
-﻿using AccessCorpUsers.Application.Entities;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Newtonsoft.Json;
 using System.Security.Claims;
 
 namespace AccessCorpUsers.WebApi.Controllers;
