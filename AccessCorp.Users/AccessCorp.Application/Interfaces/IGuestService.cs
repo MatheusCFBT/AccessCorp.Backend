@@ -9,5 +9,6 @@ namespace AccessCorpUsers.Application.Interfaces
         public Task<Result> RegisterGuest(GuestVM request);
         public Task<Result> UpdateGuest(string email, GuestVM request);
         public Task<Result> ExcludeGuest(string email);
+        public Task<Result> GenerateQrCodeForGuest(string email);
     }
 }

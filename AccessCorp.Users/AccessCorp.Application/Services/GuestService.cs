@@ -3,7 +3,6 @@ using AccessCorpUsers.Application.Interfaces;
 using AccessCorpUsers.Domain.Entities;
 using AccessCorpUsers.Domain.Interfaces;
 using AccessCorpUsers.Domain.Validations.DocsValidation;
-using AccessCorpUsers.Infra.Repositories;
 using AutoMapper;
 
 namespace AccessCorpUsers.Application.Services
@@ -13,17 +12,22 @@ namespace AccessCorpUsers.Application.Services
         private readonly IMapper _mapper;
         private readonly IGuestRepository _guestRepository;
         private readonly IDoormanRepository _doormanRepository;
+        private readonly IQrCodeGeneratorService _qrCodeGeneratorService;
 
-        public GuestService(IMapper mapper, IGuestRepository guestRepository, IDoormanRepository doormanRepository)
+        public GuestService(IMapper mapper, IGuestRepository guestRepository, IDoormanRepository doormanRepository, IQrCodeGeneratorService qrCodeGeneratorService)
         {
             _mapper = mapper;
             _guestRepository = guestRepository;
             _doormanRepository = doormanRepository;
+            _qrCodeGeneratorService = qrCodeGeneratorService;
         }
 
         public async Task<Result> ExcludeGuest(string email)
         {
             var guest = await _guestRepository.GetGuestByEmail(email);
+
+            if (guest == null)
+                return Result.Fail("O visitante não existe");
 
             await _guestRepository.Remove(guest.Id);
 
@@ -43,7 +47,9 @@ namespace AccessCorpUsers.Application.Services
 
             await _guestRepository.Add(guest);
 
-            return Result.Ok(guest);
+            var qrCode = _qrCodeGeneratorService.GenerateQRCode(guest.Id.ToString());
+
+            return Result.Ok(qrCode);
         }
 
         public async Task<Result> UpdateGuest(string email, GuestVM request)
@@ -65,9 +71,12 @@ namespace AccessCorpUsers.Application.Services
 
         public async Task<Result> ViewAllGuests(string email)
         {
-            var requestAdmin = await _doormanRepository.GetDoormanByEmail(email);
+            var requestDoorman = await _doormanRepository.GetDoormanByEmail(email);
 
-            var guest = await _guestRepository.GetGuestByCep(requestAdmin.Cep);
+            var guest = await _guestRepository.GetGuestByCep(requestDoorman.Cep);
+
+            if (guest == null)
+                return Result.Fail("não há visitantes");
 
             var guestVM = _mapper.Map<List<GuestVM>>(guest);
 
@@ -81,6 +90,18 @@ namespace AccessCorpUsers.Application.Services
             var guestVM = _mapper.Map<GuestVM>(guest);
 
             return guestVM;
+        }
+
+        public async Task<Result> GenerateQrCodeForGuest(string email)
+        {
+            var guest = await _guestRepository.GetGuestByEmail(email);
+
+            if (guest == null)
+                return Result.Fail("O visitante não existe");
+
+            var qrCode = _qrCodeGeneratorService.GenerateQRCode(guest.Id.ToString());
+
+            return Result.Ok(qrCode);
         }
     }
 }
