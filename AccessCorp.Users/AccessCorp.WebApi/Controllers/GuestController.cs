@@ -3,6 +3,7 @@ using AccessCorpUsers.Application.Interfaces;
 using AccessCorpUsers.WebApi.Extensions;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
+using static QRCoder.PayloadGenerator;
 
 namespace AccessCorpUsers.WebApi.Controllers
 {
@@ -80,6 +81,21 @@ namespace AccessCorpUsers.WebApi.Controllers
         public async Task<ActionResult<GuestVM>> ExcludeResidents(string email)
         {
             var result = await _guestService.ExcludeGuest(email);
+
+            if (result.Success) return CustomResponse(result);
+
+            foreach (var error in result.Errors)
+            {
+                AddErrorProcess(error);
+            }
+
+            return CustomResponse();
+        }
+
+        [HttpGet("new-qrcode-guest/{email}")]
+        public async Task<ActionResult> GenerateQrCode(string email)
+        {
+            var result = await _guestService.GenerateQrCodeForGuest(email);
 
             if (result.Success) return CustomResponse(result);
 
