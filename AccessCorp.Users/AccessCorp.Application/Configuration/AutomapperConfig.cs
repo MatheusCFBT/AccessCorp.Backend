@@ -19,6 +19,9 @@ namespace AccessCorpUsers.Application.Configuration
             CreateMap<Doorman, DoormanVM>().ReverseMap();
 
             CreateMap<Resident, ResidentVM>().ReverseMap();
+
+            CreateMap<Guest, GuestVM>().ReverseMap();
+
         }
     }
 }

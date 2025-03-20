@@ -149,7 +149,7 @@ public class AdministratorController : MainController
     }
 
     [HttpPut("update-resident/{email}")]
-    public async Task<ActionResult<List<ResidentVM>>> UpdateResident(string email, ResidentVM request)
+    public async Task<ActionResult<ResidentVM>> UpdateResident(string email, ResidentVM request)
     {
         if (!ModelState.IsValid)
             return CustomResponse(ModelState);
@@ -167,7 +167,7 @@ public class AdministratorController : MainController
     }
 
     [HttpDelete("exclude-resident/{email}")]
-    public async Task<ActionResult<List<ResidentVM>>> ExcludeResidents(string email)
+    public async Task<ActionResult<ResidentVM>> ExcludeResidents(string email)
     {
         var result = await _residentService.ExcludeResident(email);
 

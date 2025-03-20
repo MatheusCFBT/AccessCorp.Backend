@@ -33,6 +33,8 @@ builder.Services.AddScoped<IDoormanService, DoormanService>();
 builder.Services.AddHttpClient<IIdentityApiClient, IdentityApiClient>();
 builder.Services.AddScoped<IResidentRepository, ResidentRepository>();
 builder.Services.AddScoped<IResidentService, ResidentService>();
+builder.Services.AddScoped<IGuestRepository, GuestRepository>();
+builder.Services.AddScoped<IGuestService, GuestService>();
 
 var app = builder.Build();
 

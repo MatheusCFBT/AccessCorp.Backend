@@ -55,7 +55,6 @@ namespace AccessCorpUsers.Application.Services
             if (existingResident == null)
                 return Result.Fail("Usuário não existe");
 
-            // Atualiza apenas os campos necessários
             _mapper.Map(request, existingResident);
 
             await _residentRepository.Update(existingResident);
