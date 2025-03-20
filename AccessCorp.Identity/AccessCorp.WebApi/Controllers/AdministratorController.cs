@@ -19,11 +19,11 @@ public class AdministratorController : MainController
         _administratorService = administratorService;
     }
     
-    [HttpGet("view-administrator")] 
+    [HttpGet("view/{email}")] 
     [ProducesResponseType<ActionResult>(400)]
     [ProducesResponseType<ActionResult>(401)]
     [ProducesResponseType<ActionResult>(200)]
-    public async Task<ActionResult> View ([FromQuery] string email)
+    public async Task<ActionResult> GetAdministratorByEmail(string email)
     {
         var result = await _administratorService.ViewAdministrator(email);
         
@@ -37,11 +37,11 @@ public class AdministratorController : MainController
         return CustomResponse();
     }
     
-    [HttpPost("register-administrator")]
+    [HttpPost("register")]
     [ProducesResponseType<ActionResult>(400)]
     [ProducesResponseType<ActionResult>(401)]
     [ProducesResponseType<ActionResult>(200)]
-    public async Task<ActionResult> Register ([FromBody] AdministratorRegisterVM request)
+    public async Task<ActionResult> PostAdministrator([FromBody] AdministratorRegisterVM request)
     {
         if (!ModelState.IsValid) return CustomResponse(ModelState);
     
@@ -57,11 +57,11 @@ public class AdministratorController : MainController
         return CustomResponse();
     }
     
-    [HttpPut("update-administrator")]
+    [HttpPut("update/{email}")]
     [ProducesResponseType<ActionResult>(400)]
     [ProducesResponseType<ActionResult>(401)]
     [ProducesResponseType<ActionResult>(200)]
-    public async Task<ActionResult> Update ([FromQuery] string email ,[FromBody] AdministratorUpdateVM request)
+    public async Task<ActionResult> PutAdministrator(string email ,[FromBody] AdministratorUpdateVM request)
     {
         if (!ModelState.IsValid) return CustomResponse(ModelState);
     
@@ -77,11 +77,11 @@ public class AdministratorController : MainController
         return CustomResponse();
     }
     
-    [HttpDelete("exclude-administrator")]
+    [HttpDelete("exclude/{email}")]
     [ProducesResponseType<ActionResult>(400)]
     [ProducesResponseType<ActionResult>(401)]
     [ProducesResponseType<ActionResult>(200)]
-    public async Task<ActionResult> Exclude ([FromQuery] string email)
+    public async Task<ActionResult> DeleteAdministrator(string email)
     {
         var result = await _administratorService.ExcludeAdministrator(email);
         
