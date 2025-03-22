@@ -8,5 +8,7 @@ public class Resident : Entity
     public string Phone { get; set; }
     public string Cpf { get; set; }
     public string Cep { get; set; }
+    public string Image { get; set; }
+    public byte[] ImageUpload { get; set; }
     public int HouseNumber { get; set; }
 }

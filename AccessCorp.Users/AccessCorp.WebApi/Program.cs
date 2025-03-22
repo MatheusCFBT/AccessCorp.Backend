@@ -36,6 +36,7 @@ builder.Services.AddScoped<IResidentService, ResidentService>();
 builder.Services.AddScoped<IGuestRepository, GuestRepository>();
 builder.Services.AddScoped<IGuestService, GuestService>();
 builder.Services.AddScoped<IQrCodeGeneratorService, QrCodeGeneratorService>();
+builder.Services.AddScoped<IImageService, ImageService>();
 
 var app = builder.Build();
 
