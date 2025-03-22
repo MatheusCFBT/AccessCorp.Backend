@@ -18,7 +18,7 @@ public static class SwaggerConfig
         }).AddApiExplorer(options =>
         {
             options.GroupNameFormat = "'v'VVV";
-            options.SubstituteApiVersionInUrl = true;
+            options.SubstituteApiVersionInUrl = false;
         });
 
         builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, SwaggerConfigOptions>();
@@ -87,20 +87,31 @@ public class SwaggerConfigOptions : IConfigureOptions<SwaggerGenOptions>
         {
             options.SwaggerDoc(description.GroupName, CreateInfoForApiVersion(description));
         }
+
+        options.OperationFilter<ApiVersionFilter>();
     }
 
     private static OpenApiInfo CreateInfoForApiVersion(ApiVersionDescription description)
     {
         return new OpenApiInfo
         {
-            Title = "AccessCorp API",
+            Title = "AccessCorpUsers API",
             Version = description.ApiVersion.ToString(),
-            Description = "Esta API realiza a autenticação",
+            Description = "Esta API realiza o gerenciamento de usuários",
             Contact = new OpenApiContact
             {
                 Name = "Matheus Caldana",
                 Email = "matheusterzini@gmail.com"
             }
         };
+    }
+    private class ApiVersionFilter : IOperationFilter
+    {
+        public void Apply(OpenApiOperation operation, OperationFilterContext context)
+        {
+            var parametersToRemove = operation.Parameters.Where(x => x.Name == "api-version").ToList();
+            foreach (var parameter in parametersToRemove)
+                operation.Parameters.Remove(parameter);
+        }
     }
 }
