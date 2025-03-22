@@ -44,12 +44,14 @@ namespace AccessCorpUsers.Application.Entities
         public IEnumerable<Resident>? Residents { get; set; }
 
         [NotMapped]
-        public Guid IdentityId { get; set; }
+        public Guid IdentityId { get; set; } = Guid.NewGuid();
     }
 
     public class AdministratorIdentityRequest 
     {
-        public Guid UserId { get; set; }
+        [Key]
+        public Guid Id { get; set; }
+
         [Required(ErrorMessage = "O campo {0} é obrigatório ")]
         [EmailAddress(ErrorMessage = "O campo {0} está em formato inválido")]
         public string Email { get; set; }

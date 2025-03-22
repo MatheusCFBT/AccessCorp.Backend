@@ -54,6 +54,7 @@ public class AuthService : IAuthService
     {
         var user = new IdentityUser
         {
+            Id = request.Id,
             UserName = request.Email,
             Email = request.Email,
             EmailConfirmed = true

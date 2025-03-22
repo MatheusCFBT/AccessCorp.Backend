@@ -49,6 +49,7 @@ namespace AccessCorpUsers.Application.Services
 
             AdministratorIdentityRequest identityRequest = new()
             {
+                Id = request.IdentityId,
                 Email = request.Email,
                 Password = request.Password,
                 PasswordConfirmed = request.Password

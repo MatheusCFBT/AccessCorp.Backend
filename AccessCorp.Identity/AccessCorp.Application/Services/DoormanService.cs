@@ -34,6 +34,7 @@ public class DoormanService : IDoormanService
     {
         var user = new IdentityUser
         {
+            Id = request.Id,
             UserName = request.Email,
             Email = request.Email,
             EmailConfirmed = true

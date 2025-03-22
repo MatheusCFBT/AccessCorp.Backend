@@ -1,10 +1,6 @@
 ﻿using System.Text;
 using AccessCorpUsers.Application.Configuration;
-using AccessCorpUsers.Infra.Context;
-using AccessCorpUsers.WebApi.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 namespace AccessCorpUsers.WebApi.Configuration;
