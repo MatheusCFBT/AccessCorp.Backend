@@ -18,7 +18,13 @@ namespace AccessCorpUsers.Application.Configuration
 
             CreateMap<Doorman, DoormanVM>().ReverseMap();
 
-            CreateMap<Resident, ResidentVM>().ReverseMap();
+            CreateMap<ResidentVM, Resident>()
+                .ForMember(dest => dest.ImageUpload, opt => opt.MapFrom(src =>
+                    string.IsNullOrEmpty(src.ImageUpload) ? null : Convert.FromBase64String(src.ImageUpload)));
+
+            CreateMap<Resident, ResidentVM>()
+                .ForMember(dest => dest.ImageUpload, opt => opt.MapFrom(src =>
+                    src.ImageUpload != null ? Convert.ToBase64String(src.ImageUpload) : null));
 
             CreateMap<Guest, GuestVM>().ReverseMap();
 

@@ -12,12 +12,17 @@ namespace AccessCorpUsers.Application.Services
         private readonly IMapper _mapper;
         private readonly IResidentRepository _residentRepository;
         private readonly IAdministratorRepository _administratorRepository;
+        private readonly IImageService _imageService;
 
-        public ResidentService(IMapper mapper, IResidentRepository residentRepository, IAdministratorRepository administratorRepository)
+        public ResidentService(IMapper mapper, 
+                               IResidentRepository residentRepository,
+                               IAdministratorRepository administratorRepository,
+                               IImageService imageService)
         {
             _mapper = mapper;
             _residentRepository = residentRepository;
             _administratorRepository = administratorRepository;
+            _imageService = imageService;
         }
 
         public async Task<Result> ExcludeResident(string email)
@@ -38,6 +43,15 @@ namespace AccessCorpUsers.Application.Services
                 _residentRepository.Find(a => a.Email == request.Email).Result.Any())
                 return Result.Fail("Já existe um residente com esse CPF ou email");
 
+            var imageName = Guid.NewGuid() + "_" + request.Image;
+
+            var image = _imageService.UploadFile(request.ImageUpload, imageName);
+            
+            if (!image.Success)
+                return Result.Fail($"{image.Errors}");
+
+            request.Image = imageName;
+
             var resident = _mapper.Map<Resident>(request);
 
             await _residentRepository.Add(resident);
@@ -54,6 +68,15 @@ namespace AccessCorpUsers.Application.Services
 
             if (existingResident == null)
                 return Result.Fail("Usuário não existe");
+
+            var imageName = Guid.NewGuid() + "_" + request.Image;
+
+            var image = _imageService.UploadFile(request.ImageUpload, imageName);
+
+            if (!image.Success)
+                return Result.Fail($"{image.Errors}");
+
+            request.Image = imageName;
 
             _mapper.Map(request, existingResident);
 

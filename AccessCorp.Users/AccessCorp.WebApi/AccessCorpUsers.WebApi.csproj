@@ -23,4 +23,8 @@
     <ProjectReference Include="..\AccessCorp.Application\AccessCorpUsers.Application.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\images\" />
+  </ItemGroup>
+
 </Project>
