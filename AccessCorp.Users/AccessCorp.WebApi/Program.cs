@@ -16,18 +16,19 @@ builder.Services.AddDbContext<AccessCorpUsersDbContext>(op =>
     op.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
-
 builder.AddApiConfiguration()
     .AddJwtConfiguration()
     .AddSwaggerConfiguration();
-builder.Services.AddAutoMapper(typeof(AutomapperConfig));
 
+builder.Services.AddAutoMapper(typeof(AutomapperConfig));
 
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.Configure<IdentityApiSettings>(builder.Configuration.GetSection("IdentityApi"));
 builder.Services.AddScoped<IAdministratorRepository, AdministratorRepository>();
 builder.Services.AddScoped<IAdministratorService, AdministratorService>();
+builder.Services.AddScoped<IDeliveryRepository, DeliveryRepository>();
+builder.Services.AddScoped<IDeliveryService, DeliveryService>();
 builder.Services.AddScoped<IDoormanRepository, DoormanRepository>();
 builder.Services.AddScoped<IDoormanService, DoormanService>();
 builder.Services.AddHttpClient<IIdentityApiClient, IdentityApiClient>();

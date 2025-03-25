@@ -28,6 +28,8 @@ namespace AccessCorpUsers.Application.Configuration
 
             CreateMap<Guest, GuestVM>().ReverseMap();
 
+            CreateMap<Delivery, DeliveryVM>().ReverseMap();
+
         }
     }
 }

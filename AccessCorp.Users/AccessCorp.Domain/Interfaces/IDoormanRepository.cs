@@ -1,5 +1,4 @@
 ﻿using AccessCorpUsers.Domain.Entities;
-using System.Linq.Expressions;
 
 namespace AccessCorpUsers.Domain.Interfaces
 {
