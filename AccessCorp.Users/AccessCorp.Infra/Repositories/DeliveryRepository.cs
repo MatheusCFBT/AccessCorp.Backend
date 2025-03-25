@@ -4,7 +4,7 @@ using AccessCorpUsers.Infra.Context;
 
 namespace AccessCorpUsers.Infra.Repositories
 {
-    internal class DeliveryRepository : Repository<Delivery>, IDeliveryRepository
+    public class DeliveryRepository : Repository<Delivery>, IDeliveryRepository
     {
         public DeliveryRepository(AccessCorpUsersDbContext context) : base(context)
         {

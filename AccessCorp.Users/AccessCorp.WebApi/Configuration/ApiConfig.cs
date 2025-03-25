@@ -35,6 +35,7 @@ public static class ApiConfig
         app.MapControllers();
 
         app.Run();
+
         return app;
     }
 }

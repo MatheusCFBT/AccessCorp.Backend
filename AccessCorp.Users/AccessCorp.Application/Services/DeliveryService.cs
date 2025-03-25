@@ -1,6 +1,9 @@
 ﻿using AccessCorpUsers.Application.Entities;
 using AccessCorpUsers.Application.Interfaces;
+using AccessCorpUsers.Domain.Entities;
 using AccessCorpUsers.Domain.Interfaces;
+using AccessCorpUsers.Domain.Validations.DocsValidation;
+using AccessCorpUsers.Infra.Repositories;
 using AutoMapper;
 
 namespace AccessCorpUsers.Application.Services
@@ -29,24 +32,49 @@ namespace AccessCorpUsers.Application.Services
             return Result.Ok(deliveryVM);
         }
 
-        Task<Result> IDeliveryService.RegisterDelivery(DeliveryVM request)
+        public async Task<Result> RegisterDelivery(DeliveryVM request)
         {
-            throw new NotImplementedException();
+            if (!CepValidation.Validate(request.Cep))
+                return Result.Fail("CEP inválido");
+
+            var delivery = _mapper.Map<Delivery>(request);
+
+            await _deliveryRepository.Add(delivery);
+
+            return Result.Ok(delivery);
         }
 
-        Task<Result> IDeliveryService.UpdateDelivery(string email, DeliveryVM request)
+        public async Task<Result> UpdateDelivery(Guid id, DeliveryVM request)
         {
-            throw new NotImplementedException();
+            if (!CepValidation.Validate(request.Cep))
+                return Result.Fail("CPF ou CEP inválidos");
+
+            var existingDelivery = await _deliveryRepository.GetById(id);
+
+            if (existingDelivery == null)
+                return Result.Fail("A entrega não existe");
+
+            _mapper.Map(request, existingDelivery);
+
+            await _deliveryRepository.Update(existingDelivery);
+
+            return Result.Ok("Entrega alterada");
         }
 
-        Task<DeliveryVM> IDeliveryService.ViewDeliveryById(Guid id)
+        public async Task<DeliveryVM> ViewDeliveryById(Guid id)
         {
-            throw new NotImplementedException();
+            var delivery = await _deliveryRepository.GetById(id);
+
+            var deliveryVM = _mapper.Map<DeliveryVM>(delivery);
+
+            return deliveryVM;
         }
 
-        public Task<Result> ExcludeDelivery(string email)
+        public async Task<Result> ExcludeDelivery(Guid id)
         {
-            throw new NotImplementedException();
+            await _deliveryRepository.Remove(id);
+
+            return Result.Ok("Entrega deletada");
         }
     }
 }
