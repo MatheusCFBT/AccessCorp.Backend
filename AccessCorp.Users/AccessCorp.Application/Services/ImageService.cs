@@ -7,10 +7,10 @@ namespace AccessCorpUsers.Application.Services
     {
         public Result UploadFile(string file, string fileName)
         {
-            var imageDataByteArray = Convert.FromBase64String(file);
-
             if (string.IsNullOrEmpty(file))
                 return Result.Fail("Forneça uma imagem!");
+
+            var imageDataByteArray = Convert.FromBase64String(file);
 
             return Result.Ok(imageDataByteArray);
         }
