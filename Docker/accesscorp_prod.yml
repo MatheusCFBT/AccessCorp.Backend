@@ -1,0 +1,15 @@
+version: "3"
+
+services: 
+
+    accesscorp-users-api:
+        image: MatheusCFBT/accesscorp-users-api:latest
+        container_name: accesscorp-users-api
+        build: 
+            context: ..
+            dockerfile: AccessCorp.Users/AccessCorp.WebApi/Dockerfile
+        ports:
+            - "5001:5001"
+        environment: 
+            - ASPNETCORE_ENVIRONMENT=Production 
+            - ASPNETCORE_URLS=http://*:5164
