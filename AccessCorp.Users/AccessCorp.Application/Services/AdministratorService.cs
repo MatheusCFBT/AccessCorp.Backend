@@ -11,12 +11,14 @@ namespace AccessCorpUsers.Application.Services
     {
         private readonly IAdministratorRepository _administratorRepository;
         private readonly IIdentityApiClient _identityApiClient;
+        private readonly IImageService _imageService;
         private readonly IMapper _mapper;
 
-        public AdministratorService(IAdministratorRepository administratorRepository, IIdentityApiClient client, IMapper mapper)
+        public AdministratorService(IAdministratorRepository administratorRepository, IIdentityApiClient client, IImageService imageService, IMapper mapper)
         {
             _administratorRepository = administratorRepository;
             _identityApiClient = client;
+            _imageService = imageService;
             _mapper = mapper;
         }
         public async Task<Result> ViewAllAdministrators(string email)
@@ -30,9 +32,9 @@ namespace AccessCorpUsers.Application.Services
             return Result.Ok(adminVM);
         }
 
-        public async Task<AdministratorVM> ViewAdministratorById(Guid id)
+        public async Task<AdministratorVM> ViewAdministratorByEmail(string email)
         {
-            var administrators = await _administratorRepository.GetById(id);
+            var administrators = await _administratorRepository.GetAdminByEmail(email);
 
             var adminVM = _mapper.Map<AdministratorVM>(administrators);
 
@@ -59,6 +61,15 @@ namespace AccessCorpUsers.Application.Services
 
             if (!resultRequest.IsSuccessStatusCode)
                 return Result.Fail($"Erro, {resultRequest.Content}");
+
+            var imageName = Guid.NewGuid() + "_" + request.Image;
+
+            var image = _imageService.UploadFile(request.ImageUpload, imageName);
+
+            if (!image.Success)
+                return Result.Fail($"{image.Errors}");
+
+            request.Image = imageName;
 
             var admin = _mapper.Map<Administrator>(request);
 
