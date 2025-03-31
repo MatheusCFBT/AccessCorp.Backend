@@ -29,6 +29,8 @@ namespace AccessCorpUsers.Application.Entities
         [Required(ErrorMessage = "O campo {0} é obrigatório")]
         [StringLength(11, MinimumLength = 11, ErrorMessage = "O campo {0} precisa conter {1} caracteres")]
         public string Cpf { get; set; }
+        public string Image { get; set; }
+        public string ImageUpload { get; set; }
 
         [Required(ErrorMessage = "O campo {0} é obrigatório ")]
         [StringLength(8, MinimumLength = 8, ErrorMessage = "O campo {0} precisa ter {1} digitos")]

@@ -31,10 +31,10 @@ public class AdministratorController : MainController
     }
 
  
-    [HttpGet("view/{id}")]
-    public async Task<ActionResult<AdministratorVM>> GetAdministratorById(Guid id)
+    [HttpGet("view/{email}")]
+    public async Task<ActionResult<AdministratorVM>> GetAdministratorById(string email)
     {
-        var result = await _administratorService.ViewAdministratorById(id);
+        var result = await _administratorService.ViewAdministratorByEmail(email);
 
         if (result == null)
             return CustomResponse();
