@@ -1,5 +1,3 @@
-version: "3"
-
 services: 
 
     accesscorp-users-api:
@@ -9,11 +7,10 @@ services:
             context: ..
             dockerfile: AccessCorp.Users/AccessCorp.WebApi/Dockerfile
         ports:
-            - "5001:5001"
-            - "5003:5003"
+            - "5164:5164"
         environment: 
             - ASPNETCORE_ENVIRONMENT=Production 
-            - ASPNETCORE_URLS=http://*:7100
+            - ASPNETCORE_URLS=http://*:5164
         depends_on:
             -  accesscorp-identity-api
 
@@ -23,6 +20,8 @@ services:
         build:
             context: ..
             dockerfile: AccessCorp.Identity/AccessCorp.WebApi/Dockerfile
+        ports:
+            - "5225:5225"
         environment:
             - ASPNETCORE_ENVIRONMENT=Production 
-            - ASPNETCORE_URLS=http://*:7061
+            - ASPNETCORE_URLS=http://*:5225
