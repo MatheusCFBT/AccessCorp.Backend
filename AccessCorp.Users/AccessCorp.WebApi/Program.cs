@@ -18,7 +18,8 @@ builder.Services.AddDbContext<AccessCorpUsersDbContext>(op =>
 
 builder.AddApiConfiguration()
     .AddJwtConfiguration()
-    .AddSwaggerConfiguration();
+    .AddSwaggerConfiguration()
+    .AddCorsConfiguration();
 
 builder.Services.AddAutoMapper(typeof(AutomapperConfig));
 
