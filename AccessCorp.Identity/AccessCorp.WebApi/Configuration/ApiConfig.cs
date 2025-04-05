@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using Microsoft.AspNetCore.HttpOverrides;
+using System.Reflection;
 
 namespace AccessCorp.WebApi.Configuration;
 
@@ -14,11 +15,19 @@ public static class ApiConfig
         
         builder.Services.AddControllers();
         
+        builder.Services.Configure<ForwardedHeadersOptions>(options =>
+        {
+            options.ForwardedHeaders =
+                ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+        });
+
         return builder;
     }
 
     public static WebApplication UseApiConfiguration(this WebApplication app)
     {
+        app.UseForwardedHeaders();
+
         app.UseSwaggerConfiguration();
 
         if (app.Environment.IsDevelopment())

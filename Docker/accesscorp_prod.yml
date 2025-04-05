@@ -37,3 +37,16 @@ services:
         environment:
             - ASPNETCORE_ENVIRONMENT=Docker 
             - ASPNETCORE_URLS=http://*:5225
+
+    accesscorp-server:
+        image: MatheusCFBT/accesscorp-server:latest
+        container_name: accesscorp-server
+        build: 
+            context: ./
+            dockerfile: ./ngnix/Dockerfile
+        ports:
+            - "80:80"
+            - "443:443"
+        depends_on:
+            - accesscorp-identity-api
+            - accesscorp-users-api
