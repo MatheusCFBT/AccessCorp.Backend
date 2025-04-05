@@ -5,7 +5,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.AddApiConfiguration()
     .AddIdentityConfiguration()
     .AddSwaggerConfiguration()
-    .AddDependencyInjectionConfiguration();
+    .AddDependencyInjectionConfiguration()
+    .AddCorsConfiguration();
 
 var app = builder.Build();
 
