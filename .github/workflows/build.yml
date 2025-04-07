@@ -3,10 +3,10 @@ name: CI
 on: 
     push:
         branches:
-            - main 
+            - master 
     pull_request:
         branches:
-            - main 
+            - master 
     workflow_dispatch:
 
 concurrency:
@@ -34,7 +34,7 @@ jobs:
             - uses: codacy/git-version@2.8.0
               id: version
               with: 
-                release-branch: main
+                release-branch: master
                 prefix: v
             
             - name: Tag the repository
@@ -46,7 +46,7 @@ jobs:
                 git config --global user.name "${{ github.actor }}"
                 git tag -a ${{ steps.version.outputs.version }} -m "Release ${{ steps.version.outputs.version }}"            
                 git push --tags
-              if: github.ref == 'refs/heads/main'
+              if: github.ref == 'refs/heads/master'
 
     build-and-test:
         needs: versioning
@@ -90,7 +90,7 @@ jobs:
               run: | 
                 dotnet publish AccessCorp.Identity/AccessCorp.WebApi/AccessCorp.WebApi.csproj --no-restore --no-build --configuration Release --output ./publish
                 dotnet publish AccessCorp.Users/AccessCorp.WebApi/AccessCorpUsers.WebApi.csproj --no-restore --no-build --configuration Release --output ./publish
-              if: github.ref == 'refs/heads/main'
+              if: github.ref == 'refs/heads/master'
         
             - name: Upload dotnet artifacts
               uses:  actions/upload-artifact@v4
