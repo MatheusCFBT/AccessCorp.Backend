@@ -8,6 +8,7 @@
 	<UserSecretsId>129b1b94-75b5-42c1-a5ba-237f4a29eaa7</UserSecretsId>
 	<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
 	<DockerfileContext>..\..</DockerfileContext>
+  <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
   </PropertyGroup>
 
   <ItemGroup>

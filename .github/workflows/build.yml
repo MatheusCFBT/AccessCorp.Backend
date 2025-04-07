@@ -62,7 +62,9 @@ jobs:
               with:
                 dotnet-version: '8.x'
                 cache: true
-                cache-dependency-path: ./src/**/packages.lock.json
+                cache-dependency-path: |
+                    AccessCorp.Users/AccessCorp.WebApi/packages.lock.json 
+                    AccessCorp.Identity/AccessCorp.WebApi/packages.lock.json
 
             - name: Restore Services
               run: |
