@@ -1,0 +1,99 @@
+name: CI
+
+on: 
+    push:
+        branches:
+            - main 
+    pull_request:
+        branches:
+            - main 
+    workflow_dispatch:
+
+concurrency:
+        group: ${{ github.workflow }}-${{ github.ref}}
+        cancel-in-progress: true
+
+jobs:
+
+    versioning:
+        runs-on: ubuntu-latest
+        name: Versioning
+        permissions:
+            contents: write
+
+        outputs: 
+            version: ${{ steps.version.outputs.version }}
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+              with:
+                ref:  ${{ github.head_ref }}
+                fetch-depth: 0
+            
+            - uses: codacy/git-version@2.8.0
+              id: version
+              with: 
+                release-branch: main
+                prefix: v
+            
+            - name: Tag the repository
+              env: 
+                GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              run: |
+                echo "::notice:: ${{ steps.version.outputs.version }}"
+                git config --global user.email "${{ github.actor }}@users.noreplay.github.com"
+                git config --global user.name "${{ github.actor }}"
+                git tag -a ${{ steps.version.outputs.version }} -m "Release ${{ steps.version.outputs.version }}"            
+                git push --tags
+              if: github.ref == 'refs/heads/main'
+
+    build-and-test:
+        needs: versioning
+        runs-on: ubuntu-latest
+        name: Build and test projects
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Setup .NET Core
+              uses: actions/setup-dotnet@v4
+              with:
+                dotnet-version: '8.x'
+                cache: true
+                cache-dependency-path: ./src/**/packages.lock.json
+
+            - name: Restore Services
+              run: |
+                  dotnet restore ./Accesscorp.Identity.sln
+                  dotnet restore ./Accesscorp.Users.sln
+
+            - name: Build Services
+              run: |
+                  dotnet build --no-restore --configuration Release ./Accesscorp.Identity.sln
+                  dotnet build --no-restore --configuration Release ./Accesscorp.Users.sln
+
+            - name: Test
+              run: |
+                  dotnet test --no-restore --no-build ./Accesscorp.Identity.sln --configuration Release --logger trx --results-directory "TestResults"
+                  dotnet test --no-restore --no-build ./Accesscorp.Users.sln --configuration Release --logger trx --results-directory "TestResults"
+
+                  - uses: actions/upload-artifact@v4
+                  with:
+                    name: dotnet-test-results
+                    path: TestResults
+                
+            - name: Publish
+              run: | 
+                dotnet publish AccessCorp.Identity/AccessCorp.WebApi/AccessCorp.WebApi.csproj --no-restore --no-build --configuration Release --output ./publish
+                dotnet publish AccessCorp.Users/AccessCorp.WebApi/AccessCorpUsers.WebApi.csproj --no-restore --no-build --configuration Release --output ./publish
+              if: github.ref == 'refs/heads/main'
+        
+            - name: Upload dotnet artifacts
+              uses:  actions/upload-artifact@v4
+              with:
+                name: api
+                path: ./publish
+
+                  
