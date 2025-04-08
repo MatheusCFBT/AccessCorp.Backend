@@ -3,10 +3,10 @@ name: CI
 on: 
     push:
         branches:
-            - main 
+            - master 
     pull_request:
         branches:
-            - main 
+            - master 
     workflow_dispatch:
 
 concurrency:
@@ -34,7 +34,7 @@ jobs:
             - uses: codacy/git-version@2.8.0
               id: version
               with: 
-                release-branch: main
+                release-branch: master
                 prefix: v
             
             - name: Tag the repository
@@ -46,7 +46,7 @@ jobs:
                 git config --global user.name "${{ github.actor }}"
                 git tag -a ${{ steps.version.outputs.version }} -m "Release ${{ steps.version.outputs.version }}"            
                 git push --tags
-              if: github.ref == 'refs/heads/main'
+              if: github.ref == 'refs/heads/master'
 
     build-and-test:
         needs: versioning
@@ -68,29 +68,29 @@ jobs:
 
             - name: Restore Services
               run: |
-                  dotnet restore ./Accesscorp.Identity.sln
-                  dotnet restore ./Accesscorp.Users.sln
+                  dotnet restore ./AccessCorp.Identity.sln
+                  dotnet restore ./AccessCorp.Users.sln
 
             - name: Build Services
               run: |
-                  dotnet build --no-restore --configuration Release ./Accesscorp.Identity.sln
-                  dotnet build --no-restore --configuration Release ./Accesscorp.Users.sln
+                  dotnet build --no-restore --configuration Release ./AccessCorp.Identity.sln
+                  dotnet build --no-restore --configuration Release ./AccessCorp.Users.sln
 
             - name: Test
               run: |
-                  dotnet test --no-restore --no-build ./Accesscorp.Identity.sln --configuration Release --logger trx --results-directory "TestResults"
-                  dotnet test --no-restore --no-build ./Accesscorp.Users.sln --configuration Release --logger trx --results-directory "TestResults"
+                  dotnet test --no-restore --no-build ./AccessCorp.Identity.sln --configuration Release --logger trx --results-directory "TestResults"
+                  dotnet test --no-restore --no-build ./AccessCorp.Users.sln --configuration Release --logger trx --results-directory "TestResults"
 
-                  - uses: actions/upload-artifact@v4
-                  with:
-                    name: dotnet-test-results
-                    path: TestResults
+            - uses: actions/upload-artifact@v4
+              with:
+                name: dotnet-test-results
+                path: TestResults
                 
             - name: Publish
               run: | 
                 dotnet publish AccessCorp.Identity/AccessCorp.WebApi/AccessCorp.WebApi.csproj --no-restore --no-build --configuration Release --output ./publish
                 dotnet publish AccessCorp.Users/AccessCorp.WebApi/AccessCorpUsers.WebApi.csproj --no-restore --no-build --configuration Release --output ./publish
-              if: github.ref == 'refs/heads/main'
+              if: github.ref == 'refs/heads/master'
         
             - name: Upload dotnet artifacts
               uses:  actions/upload-artifact@v4
