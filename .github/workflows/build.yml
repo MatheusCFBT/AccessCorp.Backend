@@ -145,6 +145,8 @@ jobs:
         matrix:
           include:
             - name: Identity Service
+              language: csharp
+              build-mode: autobuild
             - name: Users Service
               language: csharp
               build-mode: autobuild
