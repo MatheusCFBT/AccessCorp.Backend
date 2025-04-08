@@ -131,6 +131,40 @@ jobs:
             comment-summary-in-pr: always 
             base-ref: master
             head-ref: master
+
+    code-security-check:
+      needs: versioning
+      runs-on: ubuntu-latest
+      permissions:
+        security-events: write
+        packages: read
+        actions: read
+        contents: read
+
+      strategy:
+        matrix:
+          include:
+            - name: Identity Service
+              language: csharp
+              build-mode: autobuild
+            - name: Users Service
+              language: csharp
+              build-mode: autobuild
+            
+      steps:
+        - uses: actions/checkout@v4
+
+        - uses: github/codeql-action/init@v3
+          name: Initialize CodeQL - ${{ matrix.name }}
+          with:
+            languages: ${{ matrix.language }}
+            build-mode: ${{ matrix.build-mode }}
+
+        - uses: github/codeql-action/analyze@v3
+          name: Analyze code - ${{ matrix.name }}
+          with:
+            category: "/languages:${{ matrix.language }}"
+
       
     
 
