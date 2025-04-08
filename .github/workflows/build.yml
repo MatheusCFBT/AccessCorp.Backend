@@ -73,13 +73,13 @@ jobs:
 
             - name: Build Services
               run: |
-                  dotnet build --no-restore --configuration Release ../../Accesscorp.Identity.sln
-                  dotnet build --no-restore --configuration Release ../../Accesscorp.Users.sln
+                  dotnet build --no-restore --configuration Release ../../AccessCorp.Identity.sln
+                  dotnet build --no-restore --configuration Release ../../AccessCorp.Users.sln
 
             - name: Test
               run: |
-                  dotnet test --no-restore --no-build ../../Accesscorp.Identity.sln --configuration Release --logger trx --results-directory "TestResults"
-                  dotnet test --no-restore --no-build ../../Accesscorp.Users.sln --configuration Release --logger trx --results-directory "TestResults"
+                  dotnet test --no-restore --no-build ../../AccessCorp.Identity.sln --configuration Release --logger trx --results-directory "TestResults"
+                  dotnet test --no-restore --no-build ../../AccessCorp.Users.sln --configuration Release --logger trx --results-directory "TestResults"
 
                   - uses: actions/upload-artifact@v4
                   with:
