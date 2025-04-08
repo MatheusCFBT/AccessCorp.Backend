@@ -73,8 +73,8 @@ jobs:
 
             - name: Build Services
               run: |
-                  dotnet build --no-restore --configuration Release ../../AccessCorp.Identity.sln
-                  dotnet build --no-restore --configuration Release ../../AccessCorp.Users.sln
+                  dotnet build --no-restore --configuration Release ./AccessCorp.Identity.sln
+                  dotnet build --no-restore --configuration Release ./AccessCorp.Users.sln
 
             - name: Test
               run: |
