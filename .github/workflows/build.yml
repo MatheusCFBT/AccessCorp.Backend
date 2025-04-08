@@ -78,13 +78,13 @@ jobs:
 
             - name: Test
               run: |
-                  dotnet test --no-restore --no-build ../../AccessCorp.Identity.sln --configuration Release --logger trx --results-directory "TestResults"
-                  dotnet test --no-restore --no-build ../../AccessCorp.Users.sln --configuration Release --logger trx --results-directory "TestResults"
+                  dotnet test --no-restore --no-build ./AccessCorp.Identity.sln --configuration Release --logger trx --results-directory "TestResults"
+                  dotnet test --no-restore --no-build ./AccessCorp.Users.sln --configuration Release --logger trx --results-directory "TestResults"
 
-                  - uses: actions/upload-artifact@v4
-                  with:
-                    name: dotnet-test-results
-                    path: TestResults
+            - uses: actions/upload-artifact@v4
+              with:
+                name: dotnet-test-results
+                path: TestResults
                 
             - name: Publish
               run: | 
