@@ -68,8 +68,8 @@ jobs:
 
             - name: Restore Services
               run: |
-                  dotnet restore ../Accesscorp.Identity.sln
-                  dotnet restore ../Accesscorp.Users.sln
+                  dotnet restore ./Accesscorp.Identity.sln
+                  dotnet restore ./AccessCorp.Users.sln
 
             - name: Build Services
               run: |
