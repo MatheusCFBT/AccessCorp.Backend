@@ -187,7 +187,17 @@ jobs:
             username: ${{ secrets.DOCKERHUB_USERNAME }}
             password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-        -name: Build and push Docker image
+        - name: Build Docker images
+          run: |
+            docker compose -f accesscorp_prod.yml build
+
+        - name: Push Docker Images
+          run: |
+            docker compose -f accesscorp_prod.yml push 
+
+        - name: Deploy Containers
+          run: |
+            docker compose -f accesscorp_prod.yml up -d
 
 
 
