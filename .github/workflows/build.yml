@@ -189,15 +189,15 @@ jobs:
 
         - name: Build Docker images
           run: |
-            docker compose -f accesscorp_prod.yml build
+            docker compose -f ../../accesscorp_prod.yml build ./Docker
 
         - name: Push Docker Images
           run: |
-            docker compose -f accesscorp_prod.yml push 
+            docker compose -f ../../accesscorp_prod.yml push 
 
         - name: Deploy Containers
           run: |
-            docker compose -f accesscorp_prod.yml up -d
+            docker compose -f ../../accesscorp_prod.yml up -d
 
 
 
