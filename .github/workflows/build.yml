@@ -177,10 +177,6 @@ jobs:
         - name: Checkout code
           uses: actions/checkout@v4
 
-        - name: Verificar estrutura de diretórios
-          run: ls -la ../../Docker/
-
-
         - uses: actions/download-artifact@v4
           with:
             path: app
