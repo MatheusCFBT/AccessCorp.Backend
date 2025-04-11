@@ -174,7 +174,8 @@ jobs:
         version: ${{ needs.versioning.outputs.version }}
 
       steps:
-        - uses: actions/checkout@v4
+        - name: Checkout code
+          uses: actions/checkout@v4
 
         - uses: actions/download-artifact@v4
           with:
@@ -189,15 +190,23 @@ jobs:
 
         - name: Build Docker images
           run: |
-            docker compose -f ../../accesscorp_prod.yml build
+            docker compose -f ./Docker/accesscorp_prod.yml build
+
+        - name: Tag Docker Images
+          run: |
+            docker tag ${{ secrets.DOCKERHUB_REPOSITORY }}/accesscorp-sql-server:${{ env.version }} ${{ secrets.DOCKERHUB_REPOSITORY }}/accesscorp-sql-server:latest
+            docker tag ${{ secrets.DOCKERHUB_REPOSITORY }}/accesscorp-users-api:${{ env.version }} ${{ secrets.DOCKERHUB_REPOSITORY }}/accesscorp-users-api:latest
+            docker tag ${{ secrets.DOCKERHUB_REPOSITORY }}/accesscorp-identity-api:${{ env.version }} ${{ secrets.DOCKERHUB_REPOSITORY }}/accesscorp-identity-api:latest
+            docker tag ${{ secrets.DOCKERHUB_REPOSITORY }}/accesscorp-server:${{ env.version }} ${{ secrets.DOCKERHUB_REPOSITORY }}/accesscorp-server:latest
+          if: github.ref == 'refs/heads/master'
 
         - name: Push Docker Images
           run: |
-            docker compose -f ../../accesscorp_prod.yml push 
+            docker compose -f ./Docker/accesscorp_prod.yml push 
 
         - name: Deploy Containers
           run: |
-            docker compose -f ../../accesscorp_prod.yml up -d
+            docker compose -f ./Docker/accesscorp_prod.yml up -d
 
 
 
