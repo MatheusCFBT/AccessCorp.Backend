@@ -194,10 +194,10 @@ jobs:
 
         - name: Tag Docker Images
           run: |
-            docker tag MatheusCFBT/accesscorp-sql-server:latest MatheusCFBT/accesscorp-sql-server:${{ needs.versioning.outputs.version }}
-            docker tag MatheusCFBT/accesscorp-users-api:latest MatheusCFBT/accesscorp-users-api:${{ needs.versioning.outputs.version }}
-            docker tag MatheusCFBT/accesscorp-identity-api:latest MatheusCFBT/accesscorp-identity-api:${{ needs.versioning.outputs.version }}
-            docker tag MatheusCFBT/accesscorp-server:latest MatheusCFBT/accesscorp-server:${{ needs.versioning.outputs.version }}
+            docker tag ${{ secrets.DOCKERHUB_REPOSITORY }}/accesscorp-sql-server:latest MatheusCFBT/accesscorp-sql-server:${{ needs.versioning.outputs.version }}
+            docker tag ${{ secrets.DOCKERHUB_REPOSITORY }}/accesscorp-users-api:latest MatheusCFBT/accesscorp-users-api:${{ needs.versioning.outputs.version }}
+            docker tag ${{ secrets.DOCKERHUB_REPOSITORY }}/accesscorp-identity-api:latest MatheusCFBT/accesscorp-identity-api:${{ needs.versioning.outputs.version }}
+            docker tag ${{ secrets.DOCKERHUB_REPOSITORY }}/accesscorp-server:latest MatheusCFBT/accesscorp-server:${{ needs.versioning.outputs.version }}
           
         - name: Push Docker Images
           run: |
