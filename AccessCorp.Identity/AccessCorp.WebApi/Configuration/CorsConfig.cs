@@ -8,7 +8,11 @@
             {
                 options.AddPolicy("Development", builder =>
                 {
-                    builder.WithOrigins("http://127.0.0.1:5500")
+                    builder.WithOrigins(
+                                "http://localhost:5164",     
+                                "https://localhost:7100",      
+                                "http://localhost:5225",       
+                                "https://localhost:7061")
                         .AllowAnyMethod()
                         .AllowAnyHeader()
                         .AllowCredentials();
