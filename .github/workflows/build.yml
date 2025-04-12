@@ -182,6 +182,12 @@ jobs:
             path: app
             merge-multiple: false
 
+        - name: Set env vars
+          run: |
+            echo "VERSION=${{ env.version }}" >> $GITHUB_ENV
+            echo "DOCKERHUB_REPOSITORY=${{ secrets.DOCKERHUB_REPOSITORY }}" >> $GITHUB_ENV
+
+
         - name: Build Docker images
           run: |
             docker compose -f ./Docker/accesscorp_prod.yml build
