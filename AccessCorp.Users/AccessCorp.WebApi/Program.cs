@@ -32,7 +32,11 @@ builder.Services.AddScoped<IDeliveryRepository, DeliveryRepository>();
 builder.Services.AddScoped<IDeliveryService, DeliveryService>();
 builder.Services.AddScoped<IDoormanRepository, DoormanRepository>();
 builder.Services.AddScoped<IDoormanService, DoormanService>();
-builder.Services.AddHttpClient<IIdentityApiClient, IdentityApiClient>();
+builder.Services.AddHttpClient<IIdentityApiClient, IdentityApiClient>()
+    .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+    {
+        ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+    });
 builder.Services.AddScoped<IResidentRepository, ResidentRepository>();
 builder.Services.AddScoped<IResidentService, ResidentService>();
 builder.Services.AddScoped<IGuestRepository, GuestRepository>();
