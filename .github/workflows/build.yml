@@ -214,6 +214,23 @@ jobs:
           run: |
             docker compose -f ./Docker/accesscorp_prod.yml up -d
 
+             SQL_CONTAINER=$(docker ps -q --filter "name=accesscorp-sql-server")
+              USERS_API_CONTAINER=$(docker ps -q --filter "name=accesscorp-users-api")
+              IDENTITY_API_CONTAINER=$(docker ps -q --filter "name=accesscorp-identity-api")
+              SERVER_CONTAINER=$(docker ps -q --filter "name=accesscorp-server")
+
+              # Get exposed ports
+              SQL_PORT=$(docker inspect --format '{{(index (index .NetworkSettings.Ports "1433/tcp") 0).HostPort}}' $SQL_CONTAINER)
+              USERS_API_PORT=$(docker inspect --format '{{(index (index .NetworkSettings.Ports "7100/tcp") 0).HostPort}}' $USERS_API_CONTAINER)
+              IDENTITY_API_PORT=$(docker inspect --format '{{(index (index .NetworkSettings.Ports "7061/tcp") 0).HostPort}}' $IDENTITY_API_CONTAINER)
+              SERVER_PORT=$(docker inspect --format '{{(index (index .NetworkSettings.Ports "8080/tcp") 0).HostPort}}' $SERVER_CONTAINER)
+
+              # Generate URLs
+              echo "SQL Server is accessible at http://localhost:${SQL_PORT}"
+              echo "Users API is accessible at https://localhost:${USERS_API_PORT}/swagger/index.html"
+              echo "Identity API is accessible at https://localhost:${IDENTITY_API_PORT}/swagger/index.html"
+              echo "Server is accessible at http://localhost:${SERVER_PORT}"
+
 
 
                   
