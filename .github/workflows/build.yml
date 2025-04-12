@@ -182,7 +182,7 @@ jobs:
             path: app
             merge-multiple: false
 
-        - name: Set env vars
+        - name: Set env vars in Docker Compose
           run: |
             echo "VERSION=${{ env.version }}" >> $GITHUB_ENV
             echo "DOCKERHUB_REPOSITORY=${{ secrets.DOCKERHUB_REPOSITORY }}" >> $GITHUB_ENV
