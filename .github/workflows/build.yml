@@ -223,7 +223,7 @@ jobs:
               SQL_PORT=$(docker inspect --format '{{(index (index .NetworkSettings.Ports "1433/tcp") 0).HostPort}}' $SQL_CONTAINER)
               USERS_API_PORT=$(docker inspect --format '{{(index (index .NetworkSettings.Ports "7100/tcp") 0).HostPort}}' $USERS_API_CONTAINER)
               IDENTITY_API_PORT=$(docker inspect --format '{{(index (index .NetworkSettings.Ports "7061/tcp") 0).HostPort}}' $IDENTITY_API_CONTAINER)
-              SERVER_PORT=$(docker inspect --format '{{(index (index .NetworkSettings.Ports "8080/tcp") 0).HostPort}}' $SERVER_CONTAINER)
+              SERVER_PORT=$(docker inspect --format '{{(index (index .NetworkSettings.Ports "80/tcp") 0).HostPort}}' $SERVER_CONTAINER)
 
               # Generate URLs
               echo "SQL Server is accessible at http://localhost:${SQL_PORT}"
