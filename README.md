@@ -1,3 +1,4 @@
+[![CI](https://github.com/MatheusCFBT/AccessCorp.Backend/actions/workflows/build.yml/badge.svg)](https://github.com/MatheusCFBT/AccessCorp.Backend/actions/workflows/build.yml)
 # AccessCorp Backend - Plataforma de Gerenciamento de Acessos
 
 Uma aplicação backend desenvolvida em C# com .NET, focada na gestão de usuários e autenticação, utilizando práticas modernas de arquitetura e desenvolvimento.
