@@ -9,3 +9,64 @@ Uma aplicação backend desenvolvida em C# com .NET, focada na gestão de usuár
 
 Se este projeto te ajudou ou chamou sua atenção, deixe uma estrela no repositório!
 
+## Tecnologias e componentes implementados 
+
+- .NET 8
+    - ASP.NET WebApi
+    - JWT
+    - ASP.NET Identity
+    - Entity Framework Core 
+
+- Componentes / Serviços
+    - Swagger UI com suporte para JWT
+
+- Hosting
+    - IIS
+    - NGINX
+    - Docker (com compose)
+
+## Arquitetura
+
+### Arquitetura completa implementando a mais importante e conceitos usados como:
+
+- Clean Code
+- Arquitetura Limpa
+- DDD - Domain Driven Design
+- Repository
+
+## Visão Geral da Arquitetura
+
+### A aplicação está baseada em duas solutions com uma api cada
+
+#### Api de gerenciamento de usuários:
+<p align="center">
+    <img alt="accesscorp.Users.Sln" src="https://github.com/user-attachments/assets/7df34052-fa76-4167-a5a9-c32041afec4f">
+</p>
+
+---
+
+#### Api de Identidade:
+<p align="center">
+    <img alt="accesscorp.Identity.Sln" src="https://github.com/user-attachments/assets/93864430-9fdc-4cef-b49f-691712326719">
+</p>
+
+---
+
+###### Cada Microsserviço possui seu próprio banco de dados.A aplicação segue os princípios da arquitetura limpa, com separação de responsabilidades e foco na escalabilidade e manutenção do código. 
+
+## Iniciando o projeto
+É possível rodar o AccessCorp Backend em qualquer sistema operacional. **Mas é necessário possuir o Docker em seu ambiente.**  ([Instalação do Docker](https://docs.docker.com/get-docker/))
+
+Clone o AccessCorp Backend e navegue para a pasta **/Docker** e depois: 
+
+### Se você quiser rodar o AccessCorp Backend em seu ambiente Docker:
+
+```
+docker compose -f accesscorp_prod.yml up
+```
+
+### Se você quiser rodar local com VS/VS Cod:
+Você precisará:
+
+- Docker
+- Instância do SQL (ou conteiner)
