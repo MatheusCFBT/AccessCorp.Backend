@@ -1,3 +1,4 @@
+[![CI](https://github.com/MatheusCFBT/AccessCorp.Backend/actions/workflows/build.yml/badge.svg)](https://github.com/MatheusCFBT/AccessCorp.Backend/actions/workflows/build.yml)
 # AccessCorp Backend - Plataforma de Gerenciamento de Acessos
 
 Uma aplicação backend desenvolvida em C# com .NET, focada na gestão de usuários e autenticação, utilizando práticas modernas de arquitetura e desenvolvimento.
@@ -52,7 +53,7 @@ Se este projeto te ajudou ou chamou sua atenção, deixe uma estrela no reposit�
 
 ---
 
-###### Cada Microsserviço possui seu próprio banco de dados.A aplicação segue os princípios da arquitetura limpa, com separação de responsabilidades e foco na escalabilidade e manutenção do código. 
+###### Cada Microsserviço possui seu próprio banco de dados. Além disso, A aplicação segue os princípios da arquitetura limpa, com separação de responsabilidades e foco na escalabilidade e manutenção do código. 
 
 ## Integração Contínua (CI/CD)
 Este repositório utiliza **GitHub Actions** para automação de tarefas como versionamento, build, testes, análise de código e publicação de imagens Docker.
@@ -96,7 +97,7 @@ Clone o AccessCorp Backend e navegue para a pasta **/Docker** e depois:
 docker compose -f accesscorp_prod.yml up
 ```
 
-### Se você quiser rodar local com VS/VS Cod:
+### Se você quiser rodar local com VS/VS Code:
 Você precisará:
 
 - Docker
