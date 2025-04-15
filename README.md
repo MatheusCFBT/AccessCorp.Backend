@@ -54,6 +54,37 @@ Se este projeto te ajudou ou chamou sua atenção, deixe uma estrela no reposit�
 
 ###### Cada Microsserviço possui seu próprio banco de dados.A aplicação segue os princípios da arquitetura limpa, com separação de responsabilidades e foco na escalabilidade e manutenção do código. 
 
+## Integração Contínua (CI/CD)
+Este repositório utiliza **GitHub Actions** para automação de tarefas como versionamento, build, testes, análise de código e publicação de imagens Docker.
+
+📋 **Workflow:**  ```CI```
+
+```
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:
+```
+- versioning: Realiza versionamento semântico baseado nos commits.
+
+- build-and-test: compila os projetos, executa testes e publica artefato do resultado dos testes.
+
+- lint: aplica análise estática com **Super Linter** (C#, YAML, etc).
+
+- dependency-check: faz revisão de dependências com base nas PRs.
+
+- code-security-check: realiza análise de segurança com o **GitHub CodeQL**.
+
+- build-docker-image: constrói e publica imagens Docker no DockerHub.
+
+
+
 ## Iniciando o projeto
 É possível rodar o AccessCorp Backend em qualquer sistema operacional. **Mas é necessário possuir o Docker em seu ambiente.**  ([Instalação do Docker](https://docs.docker.com/get-docker/))
 
@@ -70,3 +101,5 @@ Você precisará:
 
 - Docker
 - Instância do SQL (ou conteiner)
+
+Você pode editar o Docker Compose para rodar o banco de dados e salvar tempo.
