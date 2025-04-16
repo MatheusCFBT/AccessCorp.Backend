@@ -1,7 +1,7 @@
 services: 
 
     sql-server:
-        image: ${DOCKERHUB_REPOSITORY}/accesscorp-sql-server:${VERSION}
+        image: matheuscfbt/accesscorp-sql-server:latest
         container_name: accesscorp-sql-server
         build:
             context: ../sql
@@ -13,7 +13,7 @@ services:
             ACCEPT_EULA: "Y"
 
     accesscorp-users-api:
-        image: ${DOCKERHUB_REPOSITORY}/accesscorp-users-api:${VERSION}
+        image: matheuscfbt/accesscorp-users-api:latest
         container_name: accesscorp-users-api
         build: 
             context: ..
@@ -32,7 +32,7 @@ services:
             -  accesscorp-identity-api
 
     accesscorp-identity-api:
-        image: ${DOCKERHUB_REPOSITORY}/accesscorp-identity-api:${VERSION}
+        image: matheuscfbt/accesscorp-identity-api:${VERSION}
         container_name: accesscorp-identity-api
         build:
             context: ..
@@ -50,7 +50,7 @@ services:
 
 
     accesscorp-server:
-        image: ${DOCKERHUB_REPOSITORY}/accesscorp-server:${VERSION}
+        image: matheuscfbt/accesscorp-server:latest
         container_name: accesscorp-server
         build: 
             context: ./
