@@ -194,10 +194,10 @@ jobs:
 
         - name: Tag Docker Images
           run: |
-            docker tag matheuscfbt/accesscorp-sql-server:${{ env.version }} matheuscfbt/accesscorp-sql-server:latest
-            docker tag matheuscfbt/accesscorp-users-api:${{ env.version }} matheuscfbt/accesscorp-users-api:latest
-            docker tag matheuscfbt/accesscorp-identity-api:${{ env.version }} matheuscfbt/accesscorp-identity-api:latest
-            docker tag matheuscfbt/accesscorp-server:${{ env.version }} matheuscfbt/accesscorp-server:latest
+            docker tag matheuscfbt/accesscorp-sql-server:latest matheuscfbt/accesscorp-sql-server:${{ env.version }}
+            docker tag matheuscfbt/accesscorp-users-api:latest matheuscfbt/accesscorp-users-api:${{ env.version }}
+            docker tag matheuscfbt/accesscorp-identity-api:latest matheuscfbt/accesscorp-identity-api:${{ env.version }}
+            docker tag matheuscfbt/accesscorp-server:latest matheuscfbt/accesscorp-server:${{ env.version }}
           if: github.ref == 'refs/heads/master'
 
         - name: Docker Login
