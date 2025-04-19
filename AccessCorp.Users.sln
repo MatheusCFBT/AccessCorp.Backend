@@ -21,7 +21,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccessCorpUsers.Infra", "Ac
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "5 - Tests", "5 - Tests", "{D5522AA3-09B8-471E-AFD0-2B813C52F367}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccessCorpUsers.Test", "AccessCorpUsers.Test\AccessCorpUsers.Test.csproj", "{5E20B365-7177-4727-BB02-72425B50A99D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccessCorpUsers.Test", "AccessCorp.Users\AccessCorp.Tests\AccessCorpUsers.Test.csproj", "{5E20B365-7177-4727-BB02-72425B50A99D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
