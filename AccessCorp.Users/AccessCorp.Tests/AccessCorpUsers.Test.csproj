@@ -20,9 +20,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AccessCorp.Users\AccessCorp.Application\AccessCorpUsers.Application.csproj" />
-    <ProjectReference Include="..\AccessCorp.Users\AccessCorp.Infra\AccessCorpUsers.Infra.csproj" />
-    <ProjectReference Include="..\AccessCorp.Users\AccessCorp.WebApi\AccessCorpUsers.WebApi.csproj" />
+    <ProjectReference Include="..\AccessCorp.Application\AccessCorpUsers.Application.csproj" />
+    <ProjectReference Include="..\AccessCorp.Infra\AccessCorpUsers.Infra.csproj" />
+    <ProjectReference Include="..\AccessCorp.WebApi\AccessCorpUsers.WebApi.csproj" />
   </ItemGroup>
 
   <ItemGroup>
