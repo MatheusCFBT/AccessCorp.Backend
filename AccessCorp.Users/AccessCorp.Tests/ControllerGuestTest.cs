@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using Moq;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
-using AccessCorpUsers.Application.Interfaces;
 using AccessCorpUsers.WebApi.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using AccessCorpUsers.Application.Entities;
@@ -12,7 +11,6 @@ using AccessCorpUsers.Infra.Repositories;
 using AccessCorpUsers.Domain.Interfaces;
 using AccessCorpUsers.Application.Services;
 using AutoMapper;
-using static QRCoder.PayloadGenerator;
 
 namespace AccessCorpUsers.Test
 {
@@ -68,7 +66,7 @@ namespace AccessCorpUsers.Test
 
             var controller = new GuestController(guestService)
             {
-                ControllerContext = new Microsoft.AspNetCore.Mvc.ControllerContext
+                ControllerContext = new ControllerContext
                 {
                     HttpContext = mockHttpContext.Object
                 }
@@ -126,7 +124,7 @@ namespace AccessCorpUsers.Test
             {
                 new Claim(ClaimTypes.NameIdentifier, Guid.NewGuid().ToString()),
                 new Claim(ClaimTypes.Email, "porteiro@email.com")
-            };
+            };     
 
             var identity = new ClaimsIdentity(claims, "TestAuth");
 
@@ -141,7 +139,7 @@ namespace AccessCorpUsers.Test
 
             var controller = new GuestController(guestService)
             {
-                ControllerContext = new Microsoft.AspNetCore.Mvc.ControllerContext
+                ControllerContext = new ControllerContext
                 {
                     HttpContext = mockHttpContext.Object
                 }
