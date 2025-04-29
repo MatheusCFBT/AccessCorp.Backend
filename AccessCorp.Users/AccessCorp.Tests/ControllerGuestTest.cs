@@ -124,7 +124,7 @@ namespace AccessCorpUsers.Test
             {
                 new Claim(ClaimTypes.NameIdentifier, Guid.NewGuid().ToString()),
                 new Claim(ClaimTypes.Email, "porteiro@email.com")
-            };     
+            };
 
             var identity = new ClaimsIdentity(claims, "TestAuth");
 
