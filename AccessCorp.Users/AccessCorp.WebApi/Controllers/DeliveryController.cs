@@ -9,7 +9,7 @@ namespace AccessCorpUsers.WebApi.Controllers
 {
 
     [ApiVersion("1.0")]
-    [ClaimsAuthorize("Permission", "LimitedAccess"), Route("users/v1/delivery")]
+    [ClaimsAuthorize("Permission", "LimitedAccess"),ClaimsAuthorize("Permission", "FullAccess"), Route("users/v1/delivery")]
     public class DeliveryController : MainController
     {
         private readonly IDeliveryService _deliveryService;
