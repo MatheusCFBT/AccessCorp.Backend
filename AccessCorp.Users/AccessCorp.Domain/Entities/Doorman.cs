@@ -11,4 +11,9 @@ public class Doorman : Entity
     public string Password { get; set; }
     public IEnumerable<Guest> Guests { get; set; }
     public Guid IdentityId { get; set; }
+
+    public Doorman()
+    {
+        IdentityId = Id;
+    }
 }

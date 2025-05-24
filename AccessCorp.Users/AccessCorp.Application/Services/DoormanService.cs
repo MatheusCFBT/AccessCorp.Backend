@@ -88,7 +88,17 @@ namespace AccessCorpUsers.Application.Services
 
             var doorman = _mapper.Map<Doorman>(request);
 
+            var doormanExists = await _doormanRepository.GetDoormanByEmail(doorman.Email);
+
+            if (doormanExists == null)
+                return Result.Fail("Porteiro iválido");
+
+            doorman.Id = doormanExists.Id;
+
             var resultRequest = await _identityApiClient.UpdateDoormanAsync(email, identityRequest);
+
+            if (!resultRequest.IsSuccessStatusCode)
+                return Result.Fail($"Erro, {resultRequest.Content}");
 
             await _doormanRepository.Update(doorman);
 

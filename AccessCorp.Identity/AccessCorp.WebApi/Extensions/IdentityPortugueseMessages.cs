@@ -11,7 +11,7 @@ public override IdentityError ConcurrencyFailure()
 
 public override IdentityError PasswordMismatch()
 {
-    return new IdentityError { Code = nameof(PasswordMismatch), Description = $"Senha incorreta." };
+    return new IdentityError { Code = nameof(PasswordMismatch), Description = $"Password incorreta." };
 }
 
 public override IdentityError InvalidToken()

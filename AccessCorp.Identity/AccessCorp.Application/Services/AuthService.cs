@@ -40,14 +40,14 @@ public class AuthService : IAuthService
 
     public async Task<Result> LoginAdministrator(AdministratorLoginVM request)
     {
-        if (!await _userClaimsService.HasAdmimClaims(request.Email)) return Result.Fail("Usuário ou Senha incorretos");
+        if (!await _userClaimsService.HasAdmimClaims(request.Email)) return Result.Fail("Usuário ou Password incorretos");
        
         var result = await _signInManager.PasswordSignInAsync(request.Email, request.Password, false, true);
 
         if (result.Succeeded)
             return Result.Ok(await _jwtService.GenerateJWTAdmin(request.Email));
 
-        return Result.Fail(result.IsLockedOut ? "Usuário temporariamente bloqueados por tentativas inválidas." : "Usuário ou Senha incorretos");
+        return Result.Fail(result.IsLockedOut ? "Usuário temporariamente bloqueados por tentativas inválidas." : "Usuário ou Password incorretos");
     }
 
     public async Task<Result> RegisterAdministrator(AdministratorRegisterVM request)
@@ -109,14 +109,14 @@ public class AuthService : IAuthService
     public async Task<Result> LoginDoorman(DoormanLoginVM request)
     {
         if (!await _userClaimsService.HasDoormanClaims(request.Email))
-            return Result.Fail("Usuário ou Senha incorretos");
+            return Result.Fail("Usuário ou Password incorretos");
         
-        var result = await _signInManager.PasswordSignInAsync(request.Email, request.Senha, false, true);
+        var result = await _signInManager.PasswordSignInAsync(request.Email, request.Password, false, true);
     
         if (result.Succeeded)
             return Result.Ok(await _jwtService.GenerateJWTDoorman(request.Email));
 
-        return Result.Fail(result.IsLockedOut ? "Usuário temporariamente bloqueados por tentativas inválidas." : "Usuário ou Senha incorretos");
+        return Result.Fail(result.IsLockedOut ? "Usuário temporariamente bloqueados por tentativas inválidas." : "Usuário ou Password incorretos");
     }
 
 

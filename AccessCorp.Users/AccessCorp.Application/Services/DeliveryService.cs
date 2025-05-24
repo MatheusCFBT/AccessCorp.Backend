@@ -12,20 +12,33 @@ namespace AccessCorpUsers.Application.Services
     {
         private readonly IDeliveryRepository _deliveryRepository;
         private readonly IDoormanRepository _doormanRepository;
+        private readonly IAdministratorRepository _administratorRepository;
         private readonly IMapper _mapper;
 
-        public DeliveryService(IDeliveryRepository deliveryRepository, IDoormanRepository doormanRepository, IMapper mapper)
+        public DeliveryService(IDeliveryRepository deliveryRepository, IDoormanRepository doormanRepository, IAdministratorRepository administratorRepository, IMapper mapper)
         {
             _deliveryRepository = deliveryRepository;
             _doormanRepository = doormanRepository;
+            _administratorRepository = administratorRepository;
             _mapper = mapper;
         }
 
         public async Task<Result> ViewAllDeliveries(string email)
         {
-            var requestDoorman = await _doormanRepository.GetDoormanByEmail(email);
+            string cep = string.Empty;
 
-            var deliveries = await _deliveryRepository.GetDeliveriesByCep(requestDoorman.Cep);
+            var doorman = await _doormanRepository.GetDoormanByEmail(email);
+
+            if (doorman != null)
+                cep = doorman.Cep;
+
+            if (string.IsNullOrEmpty(cep))
+            {
+                var admin = await _administratorRepository.GetAdminByEmail(email);
+                cep = admin.Cep;
+            }
+
+            var deliveries = await _deliveryRepository.GetDeliveriesByCep(cep);
 
             var deliveryVM = _mapper.Map<List<DeliveryVM>>(deliveries);
 

@@ -91,8 +91,18 @@ namespace AccessCorpUsers.Application.Services
             };
 
             var admin = _mapper.Map<Administrator>(request);
-     
+
+            var adminExists = await _administratorRepository.GetAdminByEmail(admin.Email);
+
+            if (adminExists == null)
+                return Result.Fail("Administrador inválido");
+
+            admin.Id = adminExists.Id;
+
             var resultRequest = await _identityApiClient.UpdateAdministratorAsync(email, identityRequest);
+
+            if (!resultRequest.IsSuccessStatusCode)
+                return Result.Fail($"Erro, {resultRequest.Content}");
 
             await _administratorRepository.Update(admin);
 

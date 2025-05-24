@@ -3,6 +3,7 @@ using AccessCorpUsers.Application.Interfaces;
 using AccessCorpUsers.Domain.Entities;
 using AccessCorpUsers.Domain.Interfaces;
 using AccessCorpUsers.Domain.Validations.DocsValidation;
+using AccessCorpUsers.Infra.Repositories;
 using AutoMapper;
 
 namespace AccessCorpUsers.Application.Services
@@ -11,18 +12,21 @@ namespace AccessCorpUsers.Application.Services
     {
         private readonly IMapper _mapper;
         private readonly IResidentRepository _residentRepository;
+        private readonly IDoormanRepository _doormanRepository;
         private readonly IAdministratorRepository _administratorRepository;
         private readonly IImageService _imageService;
 
         public ResidentService(IMapper mapper, 
                                IResidentRepository residentRepository,
                                IAdministratorRepository administratorRepository,
-                               IImageService imageService)
+                               IImageService imageService,
+                               IDoormanRepository doormanRepository)
         {
             _mapper = mapper;
             _residentRepository = residentRepository;
             _administratorRepository = administratorRepository;
             _imageService = imageService;
+            _doormanRepository = doormanRepository;
         }
 
         public async Task<Result> ExcludeResident(string email)
@@ -96,9 +100,20 @@ namespace AccessCorpUsers.Application.Services
 
         public async Task<Result> ViewAllResidents(string email)
         {
-            var requestAdmin = await _administratorRepository.GetAdminByEmail(email);
-            
-            var residents = await _residentRepository.GetResidentsByCep(requestAdmin.Cep);
+            string cep = string.Empty;
+
+            var doorman = await _doormanRepository.GetDoormanByEmail(email);
+
+            if (doorman != null)
+                cep = doorman.Cep;
+
+            if (string.IsNullOrEmpty(cep))
+            {
+                var admin = await _administratorRepository.GetAdminByEmail(email);
+                cep = admin.Cep;
+            }
+
+            var residents = await _residentRepository.GetResidentsByCep(cep);
 
             var residentVM = _mapper.Map<List<ResidentVM>>(residents);
 

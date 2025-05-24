@@ -3,13 +3,14 @@ using AccessCorpUsers.Application.Interfaces;
 using AccessCorpUsers.Application.Services;
 using AccessCorpUsers.WebApi.Extensions;
 using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AccessCorpUsers.WebApi.Controllers
 {
 
     [ApiVersion("1.0")]
-    [ClaimsAuthorize("Permission", "LimitedAccess"), Route("users/v1/delivery")]
+    [Authorize, Route("users/v1/delivery")]
     public class DeliveryController : MainController
     {
         private readonly IDeliveryService _deliveryService;
@@ -23,7 +24,8 @@ namespace AccessCorpUsers.WebApi.Controllers
         public async Task<ActionResult<List<DeliveryVM>>> GetAllDeliveries()
         {
             var userId = GetUserId(HttpContext.User);
-                var result = await _deliveryService.ViewAllDeliveries(userId.email);
+            
+            var result = await _deliveryService.ViewAllDeliveries(userId.email);
 
             if (result == null)
                 return CustomResponse();
