@@ -14,5 +14,10 @@ public class Administrator : Entity
     public byte[] ImageUpload { get; set; }
     public IEnumerable<Doorman>? Doormans { get; set; }
     public IEnumerable<Resident>? Residents { get; set; }
-    public Guid IdentityId { get; set; } = Guid.NewGuid();
+    public Guid IdentityId { get; set; }
+
+    public Administrator()
+    {
+        IdentityId = Id;
+    }
 }

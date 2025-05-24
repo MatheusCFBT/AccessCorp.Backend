@@ -35,11 +35,11 @@ public static class ApiConfig
             app.UseDeveloperExceptionPage();
         }
 
-        app.UseCorsConfiguration();
-
         app.UseHttpsRedirection();
 
         app.UseRouting();
+
+        app.UseCorsConfiguration();
 
         app.UseAuthorizationConfiguration(); 
 

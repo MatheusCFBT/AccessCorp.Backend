@@ -2,12 +2,13 @@
 using AccessCorpUsers.Application.Interfaces;
 using AccessCorpUsers.WebApi.Extensions;
 using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AccessCorpUsers.WebApi.Controllers
 {
     [ApiVersion("1.0")]
-    [ClaimsAuthorize("Permission", "FullAccess"), Route("users/v1/residents")]
+    [Authorize, Route("users/v1/residents")]
     public class ResidentsController : MainController
     {
         private readonly IResidentService _residentService;
@@ -30,6 +31,7 @@ namespace AccessCorpUsers.WebApi.Controllers
         }
 
         [HttpGet("view/{id}")]
+        [ClaimsAuthorize("Permission", "FullAccess")]
         public async Task<ActionResult<ResidentVM>> GetResidentById(Guid id)
         {
             var result = await _residentService.ViewResidentById(id);
@@ -41,6 +43,7 @@ namespace AccessCorpUsers.WebApi.Controllers
         }
 
         [HttpPost("register")]
+        [ClaimsAuthorize("Permission", "FullAccess")]
         public async Task<ActionResult<ResidentVM>> PostResident([FromBody] ResidentVM request)
         {
             if (!ModelState.IsValid)
@@ -59,6 +62,7 @@ namespace AccessCorpUsers.WebApi.Controllers
         }
 
         [HttpPut("update/{email}")]
+        [ClaimsAuthorize("Permission", "FullAccess")]
         public async Task<ActionResult<ResidentVM>> PutResident(string email, [FromBody] ResidentVM request)
         {
             if (!ModelState.IsValid)
@@ -77,6 +81,7 @@ namespace AccessCorpUsers.WebApi.Controllers
         }
 
         [HttpDelete("exclude/{email}")]
+        [ClaimsAuthorize("Permission", "FullAccess")]
         public async Task<ActionResult<ResidentVM>> DeleteResident(string email)
         {
             var result = await _residentService.ExcludeResident(email);

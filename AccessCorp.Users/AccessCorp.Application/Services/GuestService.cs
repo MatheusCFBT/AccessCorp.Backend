@@ -57,14 +57,16 @@ namespace AccessCorpUsers.Application.Services
             if (!CpfValidation.Validate(request.Cpf) || !CepValidation.Validate(request.Cep))
                 return Result.Fail("CPF ou CEP inválidos");
 
+            var guest = _mapper.Map<Guest>(request);
+
             var existingGuest = await _guestRepository.GetGuestByEmail(email);
 
             if (existingGuest == null)
                 return Result.Fail("Usuário não existe");
 
-            _mapper.Map(request, existingGuest);
+            guest.Id = existingGuest.Id;
 
-            await _guestRepository.Update(existingGuest);
+            await _guestRepository.Update(guest);
 
             return Result.Ok("Usuário alterado");
         }

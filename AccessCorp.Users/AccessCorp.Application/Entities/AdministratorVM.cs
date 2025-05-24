@@ -8,7 +8,7 @@ namespace AccessCorpUsers.Application.Entities
     public class AdministratorVM
     {
         [Key]
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
 
         [Required(ErrorMessage = "O campo {0} é obrigatório ")]
         [StringLength(40, MinimumLength = 6, ErrorMessage = "O campo {0} precisa ter entre {2} e {1} caracteres")]
@@ -46,7 +46,7 @@ namespace AccessCorpUsers.Application.Entities
         public IEnumerable<Resident>? Residents { get; set; }
 
         [NotMapped]
-        public Guid IdentityId { get; set; } = Guid.NewGuid();
+        public Guid IdentityId => Id;
     }
 
     public class AdministratorIdentityRequest 

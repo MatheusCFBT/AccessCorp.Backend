@@ -22,7 +22,7 @@ public class SendEmailService : ISendEmailService
             var client = new SendGridClient(_sendGridSettings.ApiKey);
             var from = new EmailAddress(_sendGridSettings.FromEmail, _sendGridSettings.FromName);
             var to = new EmailAddress(toEmail);
-            var subject = "Redefinição de Senha - AccessCorp";
+            var subject = "Redefinição de Password - AccessCorp";
             var body = EmailBody(token);
             var msg = MailHelper.CreateSingleEmail(from, to, subject, body, body);
 
@@ -46,7 +46,7 @@ public class SendEmailService : ISendEmailService
                 </head>
                 <body>
                     <div class='container'>
-                        <h2>Redefinição de Senha - AccessCorp</h2>
+                        <h2>Redefinição de Password - AccessCorp</h2>
                         <p>Olá,</p>
                         <p>Recebemos uma solicitação para redefinir a sua senha. Para concluir o processo, utilize o código abaixo:</p>
                         <span class='token'>{token}</span>
